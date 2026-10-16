@@ -1,0 +1,54 @@
+[
+  {
+    "id": "QT-001",
+    "inquiry_id": "INQ-001",
+    "customer_id": "C001",
+    "customer_name": "Nordic Retail Group HQ",
+    "vendor_id": "V-YH01",
+    "vendor_name": "义乌星海家居礼品有限公司",
+    "currency": "USD",
+    "incoterms": "FOB Ningbo",
+    "valid_until": "2026-09-20",
+    "status": "draft",
+    "total": "12000",
+    "notes": "圣诞门店赠品保温杯草稿报价",
+    "lines": [
+      {
+        "product": "500ml 保温杯",
+        "color": "哑光黑",
+        "material": "304不锈钢",
+        "qty": "3000",
+        "unit_price": "4.0",
+        "moq": "500",
+        "lead_days": "25",
+        "notes": "激光LOGO含1色"
+      }
+    ]
+  },
+  {
+    "id": "QT-002",
+    "inquiry_id": "INQ-002",
+    "customer_id": "C002",
+    "customer_name": "BrightWave Marketing",
+    "vendor_id": "V-SZ03",
+    "vendor_name": "深圳能量数码礼品有限公司",
+    "currency": "USD",
+    "incoterms": "FOB Shenzhen",
+    "valid_until": "2026-09-18",
+    "status": "sent",
+    "total": "8000",
+    "notes": "会议充电宝含丝印",
+    "lines": [
+      {
+        "product": "10000mAh 充电宝",
+        "color": "商务蓝",
+        "material": "ABS+PC",
+        "qty": "800",
+        "unit_price": "10.0",
+        "moq": "300",
+        "lead_days": "20",
+        "notes": "含 CE/FCC 文件"
+      }
+    ]
+  }
+]

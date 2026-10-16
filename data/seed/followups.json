@@ -1,0 +1,29 @@
+[
+  {
+    "id": "FU-001",
+    "customer_id": "C001",
+    "customer_name": "Nordic Retail Group HQ",
+    "due_date": "2026-09-05",
+    "reason": "圣诞保温杯方案待反馈厂商短名单",
+    "priority": "high",
+    "suggested_action": "把 V-YH01 方案与交期发给 Emma，并确认 LOGO 文件"
+  },
+  {
+    "id": "FU-002",
+    "customer_id": "C002",
+    "customer_name": "BrightWave Marketing",
+    "due_date": "2026-09-06",
+    "reason": "充电宝需确认 UN38.3 与空运可行性",
+    "priority": "high",
+    "suggested_action": "联系 V-SZ03 要证书清单与样品周期"
+  },
+  {
+    "id": "FU-003",
+    "customer_id": "C005",
+    "customer_name": "Alpine Outdoor Club",
+    "due_date": "2026-09-07",
+    "reason": "卫衣+杯组合套装待拆分报价",
+    "priority": "medium",
+    "suggested_action": "分别询 V-SX04 与 V-YH01，再汇总套装价"
+  }
+]

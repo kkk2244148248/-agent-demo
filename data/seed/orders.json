@@ -1,0 +1,22 @@
+[
+  {
+    "id": "PO-001",
+    "inquiry_id": "INQ-002",
+    "quotation_id": "QT-002",
+    "customer_id": "C002",
+    "customer_name": "BrightWave Marketing",
+    "vendor_id": "V-SZ03",
+    "vendor_name": "深圳能量数码礼品有限公司",
+    "product": "10000mAh 充电宝",
+    "color": "商务蓝",
+    "material": "ABS+PC",
+    "qty": "800",
+    "unit_price": "10.0",
+    "currency": "USD",
+    "deposit": "30%",
+    "status": "待定金",
+    "etd": "2026-09-30",
+    "tracking_no": "",
+    "notes": "等定金到账开产"
+  }
+]

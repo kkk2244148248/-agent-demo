@@ -1,0 +1,46 @@
+[
+  {
+    "id": "E01",
+    "username": "chenxw",
+    "password": "123456",
+    "name": "陈晓雯",
+    "role": "业务经理",
+    "email": "chenxw@longhai.local",
+    "is_admin": true,
+    "can_approve": true,
+    "active": true
+  },
+  {
+    "id": "E02",
+    "username": "liht",
+    "password": "123456",
+    "name": "李海涛",
+    "role": "外贸业务员",
+    "email": "liht@longhai.local",
+    "is_admin": false,
+    "can_approve": false,
+    "active": true
+  },
+  {
+    "id": "E03",
+    "username": "wangf",
+    "password": "123456",
+    "name": "王芳",
+    "role": "单证跟单",
+    "email": "wangf@longhai.local",
+    "is_admin": false,
+    "can_approve": false,
+    "active": true
+  },
+  {
+    "id": "E04",
+    "username": "zhoum",
+    "password": "123456",
+    "name": "周明",
+    "role": "老板",
+    "email": "zhoum@longhai.local",
+    "is_admin": true,
+    "can_approve": true,
+    "active": true
+  }
+]
