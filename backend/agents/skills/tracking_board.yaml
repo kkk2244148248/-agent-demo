@@ -1,0 +1,26 @@
+id: tracking_board
+title: 生产跟单
+description: 按 6 节点（定金到账→排产下单→中期进度→尾期验货→报关出货→到港签收）看每张在产订单的进度与交期红绿灯，识别延期根因并生成催办话术
+when: 用户问生产进度、到哪一步了、交期来得及吗、会不会延期、催一下工厂、跟一下生产
+triggers:
+  - 生产进度
+  - 跟单
+  - 到哪一步
+  - 到哪了
+  - 交期
+  - 会不会延期
+  - 要延期吗
+  - 催工厂
+  - 跟一下生产
+  - 红绿灯
+  - 排产
+  - 验货
+  - 出货了没
+tools:
+  - tracking_overview
+  - delay_alert
+  - milestone_advance
+  - chase_factory_script
+requires: []
+parallel_ok: false
+mode: agents

@@ -1,0 +1,19 @@
+id: ask_factory
+title: 询厂话术
+description: 起草发给国内工厂的中文询价微信/邮件，含规格、数量、LOGO、目标价与要工厂回报的信息
+when: 用户说询厂、问工厂、给工厂发微信、询价一下、找厂问价
+triggers:
+  - 询厂
+  - 问工厂
+  - 问一下工厂
+  - 询价
+  - 微信给厂
+  - 给工厂发
+  - 找厂问价
+  - factory
+  - 询价微信
+tools:
+  - draft_factory_brief
+requires: []
+parallel_ok: false
+mode: agents

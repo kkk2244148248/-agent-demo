@@ -1,0 +1,19 @@
+id: followup_mail
+title: 跟催邮件
+description: 客户看了报价没回复时，起草礼貌但有推进力的跟催邮件
+when: 用户说催一下、客户没回、跟进一下、follow up、催确认
+triggers:
+  - 跟催
+  - 催一下
+  - 催催
+  - 客户没回
+  - 没回复
+  - 跟进一下
+  - 催确认
+  - follow up
+  - follow-up
+tools:
+  - draft_followup_mail
+requires: []
+parallel_ok: false
+mode: agents

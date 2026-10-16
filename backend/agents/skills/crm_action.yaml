@@ -1,0 +1,29 @@
+id: crm_action
+title: CRM写入与跳转
+description: 建客户/厂商/跟进档案，搜索档案，看客户360全貌，查逾期跟进，跳转页面
+when: 用户说加客户、新建厂商、登记跟进、查这个客户、客户全貌、逾期跟进
+triggers:
+  - 添加厂商
+  - 新建厂商
+  - 加厂商
+  - 添加客户
+  - 新建客户
+  - 加客户
+  - 添加跟进
+  - 登记跟进
+  - 打开客户
+  - 打开厂商
+  - 客户360
+  - 客户全貌
+  - 查客户
+  - 查厂商
+  - 逾期跟进
+tools:
+  - crm_action
+  - search_crm
+  - customer_360
+  - list_overdue_followups
+  - suggest_nav
+requires: []
+parallel_ok: false
+mode: agents

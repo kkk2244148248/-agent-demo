@@ -1,0 +1,24 @@
+id: floor_price_guard
+title: 报价守门
+description: 校验报价是否低于底价红线，低于底价须走特批并留审计；支持报价版本对比复盘与丢单归因
+when: 用户问这个价能不能报、低于底价了吗、要不要特批、比对一下报价版本、为什么丢单
+triggers:
+  - 底价
+  - 低于底价
+  - 能不能报
+  - 这个价能报吗
+  - 要不要特批
+  - 特批
+  - 红线
+  - 报价版本
+  - 版本对比
+  - 为什么丢单
+  - 丢单原因
+tools:
+  - floor_price_check
+  - quote_version_diff
+  - below_floor_review
+  - lost_deal_analysis
+requires: []
+parallel_ok: false
+mode: agents

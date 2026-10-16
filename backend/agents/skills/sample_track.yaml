@@ -1,0 +1,23 @@
+id: sample_track
+title: 样品进度
+description: 查看/登记样品，查逾期，推进打样状态，生成给工厂的打样简报
+when: 用户问样品、打样、寄样、样品到哪了、逾期样品、要打样要求
+triggers:
+  - 样品
+  - 打样
+  - 寄样
+  - 样品进度
+  - 样品到哪了
+  - 逾期样品
+  - 打样要求
+  - 打样简报
+  - sample
+tools:
+  - sample_overdue
+  - advance_sample_status
+  - sample_brief
+  - upsert_sample
+  - list_samples
+requires: []
+parallel_ok: false
+mode: agents

@@ -1,0 +1,26 @@
+id: profit_check
+title: 利润核算
+description: 算清一笔单真实赚多少——工厂采购价叠加 LOGO、内陆运费、报关单证、港杂、海运费、保险、佣金，扣除退税、考虑汇率波动，给出真实毛利、盈亏平衡价与建议底价
+when: 用户问这个单能赚多少、毛利多少、成本多少、能不能接、划不划算、帮我算算账
+triggers:
+  - 能赚多少
+  - 赚多少
+  - 毛利
+  - 毛利率
+  - 利润
+  - 算算账
+  - 能不能接
+  - 划算吗
+  - 划不划算
+  - 盈亏平衡
+  - 真实成本
+  - 含退税
+tools:
+  - profit_calc
+  - quote_price_suggest
+  - margin_check
+  - rebate_estimate
+  - fx_stress_test
+requires: []
+parallel_ok: false
+mode: agents

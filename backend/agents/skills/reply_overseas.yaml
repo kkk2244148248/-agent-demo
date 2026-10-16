@@ -1,0 +1,22 @@
+id: reply_overseas
+title: 回复海外
+description: 起草给海外客户/总部的商务回复邮件，或对已有草稿按语气润色
+when: 用户说回海外、回客户邮件、给客户答复、润色一下、改短点
+triggers:
+  - 回海外
+  - 回复客户
+  - 回客户
+  - 给客户回
+  - 回邮件
+  - 草拟回复
+  - 润色
+  - 改短
+  - reply
+  - 给总部
+  - 海外回复
+tools:
+  - draft_client_reply
+  - polish_reply
+requires: []
+parallel_ok: false
+mode: agents

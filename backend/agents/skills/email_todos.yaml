@@ -1,0 +1,18 @@
+id: email_todos
+title: 邮件待办
+description: 从长询盘邮件里抽出待办事项、风险点和时间承诺
+when: 用户说这封邮件理一下、提取待办、有什么要注意的、要点
+triggers:
+  - 待办
+  - 提取待办
+  - 理一下邮件
+  - 要点
+  - 有什么要注意
+  - action item
+  - 风险点
+  - 这封邮件
+tools:
+  - extract_email_todos
+requires: []
+parallel_ok: false
+mode: agents

@@ -1,0 +1,26 @@
+id: collection_chase
+title: 收款催款
+description: 看每张订单的定金/尾款/中期款到账情况，按账龄（逾期天数）分级，生成催款话术与升级建议
+when: 用户问谁还欠我钱、收款情况、尾款到了吗、逾期没付、催款、账期
+triggers:
+  - 收款
+  - 催款
+  - 谁欠我钱
+  - 还欠多少
+  - 尾款
+  - 定金到了吗
+  - 到账
+  - 逾期没付
+  - 账期
+  - 应收
+  - 催一下款
+  - 该收的钱
+tools:
+  - collection_board
+  - overdue_aging
+  - payment_record
+  - dunning_script
+  - escalation_advice
+requires: []
+parallel_ok: false
+mode: agents

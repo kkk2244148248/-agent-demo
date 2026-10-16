@@ -1,0 +1,26 @@
+id: cert_check
+title: 认证检查
+description: 品类认证清单、目的市场单证包、宣传用语风险、出货单证核对
+when: 用户问认证、CE、FCC、FDA、UN38、单证、宣传词能不能写、出货要什么文件
+triggers:
+  - 认证
+  - 要什么认证
+  - ce
+  - fcc
+  - un38
+  - fda
+  - rohs
+  - 单证
+  - 出货文件
+  - 报关资料
+  - 可降解
+  - 宣传
+  - 能不能写
+tools:
+  - cert_checklist
+  - market_cert_pack
+  - claim_risk_check
+  - shipping_doc_checklist
+requires: []
+parallel_ok: false
+mode: agents

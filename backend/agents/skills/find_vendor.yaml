@@ -1,0 +1,21 @@
+id: find_vendor
+title: 找厂匹配
+description: 按需求从自有工厂库里检索并排序候选厂商，产出可直接联系的短名单
+when: 用户说找厂、谁能做、有没有厂家、匹配一下厂商、只要找厂
+triggers:
+  - 找厂
+  - 找厂家
+  - 谁能做
+  - 哪家能做
+  - 有没有厂
+  - 匹配厂商
+  - 帮我找厂
+  - 有没有厂家
+  - vendor
+  - 只找厂
+tools:
+  - search_vendors
+  - rank_vendors
+requires: []
+parallel_ok: false
+mode: agents

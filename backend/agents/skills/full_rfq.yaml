@@ -1,0 +1,22 @@
+id: full_rfq
+title: 全套询盘方案
+description: 一条龙跑完——解析需求 → 找厂 → 排序 → 比价 → 成本粗算 → 起草海外回复
+when: 用户明确说全套、完整方案、从头处理、整套走一遍
+triggers:
+  - 全套
+  - 完整方案
+  - 整套
+  - 从头处理
+  - 一条龙
+  - 全部跑一遍
+  - 完整流程
+tools:
+  - parse_requirement
+  - search_vendors
+  - rank_vendors
+  - compare_quotes
+  - estimate_cost
+  - draft_client_reply
+requires: []
+parallel_ok: false
+mode: agents

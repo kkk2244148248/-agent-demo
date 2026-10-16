@@ -1,0 +1,17 @@
+id: parse_requirement
+title: 解析需求
+description: 把海外客户的一段需求拆成品类、数量、预算、LOGO、交期、认证等结构化字段，并列出还缺哪些信息
+when: 用户说解析一下、拆需求、理一理这封邮件、这个需求什么意思
+triggers:
+  - 解析需求
+  - 拆需求
+  - 拆一下
+  - 理一理
+  - 看一下这个需求
+  - 需求是什么意思
+  - 帮我拆
+tools:
+  - parse_requirement
+requires: []
+parallel_ok: false
+mode: agents

@@ -1,0 +1,19 @@
+id: vendor_risk
+title: 厂商风险
+description: 检查候选厂商的停用、备注风险、认证缺口，输出风险等级与优先短名单
+when: 用户问这家厂靠谱吗、有没有风险、过一下风险、哪家优先
+triggers:
+  - 风险
+  - 靠谱吗
+  - 有风险吗
+  - 过一下风险
+  - 查风险
+  - 哪家优先
+  - 短名单
+  - 排个序
+tools:
+  - vendor_risk_check
+  - rank_vendors
+requires: []
+parallel_ok: false
+mode: agents

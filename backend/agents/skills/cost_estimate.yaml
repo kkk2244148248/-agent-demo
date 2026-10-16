@@ -1,0 +1,18 @@
+id: cost_estimate
+title: 成本粗算
+description: 粗算参考成本区间与 FOB 大概范围，判断心里有没有数（非正式报价）
+when: 用户说算成本、大概多少钱、心里报价、报多少合适、成本区间
+triggers:
+  - 成本
+  - 算成本
+  - 大概多少钱
+  - 成本区间
+  - 心里报价
+  - 报多少合适
+  - 粗算
+  - 报价区间
+tools:
+  - estimate_cost
+requires: []
+parallel_ok: false
+mode: agents

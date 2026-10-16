@@ -1,0 +1,20 @@
+id: kb_qa
+title: 知识问答
+description: FAQ 快查 + 知识库 RAG 检索，回答口径、MOQ 常识、产品资料、价格区间等知识问题
+when: 用户问一般是多少、什么意思、有资料吗、口径、常识性提问，而非执行具体业务动作
+triggers:
+  - moq一般
+  - 一般是多少
+  - 什么意思
+  - 有资料吗
+  - 知识库
+  - 查资料
+  - 口径
+  - 常识
+  - 怎么算
+tools:
+  - faq_lookup
+  - kb_search
+requires: []
+parallel_ok: false
+mode: agents

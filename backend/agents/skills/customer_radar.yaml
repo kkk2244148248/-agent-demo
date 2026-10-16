@@ -1,0 +1,24 @@
+id: customer_radar
+title: 客户雷达
+description: 扫描私海客户降温情况（快到期未跟进、即将被回收），从公海挑出值得认领的客户，并生成分阶段触达话术
+when: 用户问客户要跑了、哪些客户没跟进、快被回收了、公海有什么好客户、捞客户、跟进提醒
+triggers:
+  - 客户要跑了
+  - 没跟进的客户
+  - 快回收了
+  - 要被回收
+  - 公海
+  - 捞客户
+  - 认领客户
+  - 跟进提醒
+  - 客户盘点
+  - 盘一下客户
+  - 客户雷达
+tools:
+  - customer_pool_scan
+  - customer_radar_report
+  - reachout_script
+  - claim_advice
+requires: []
+parallel_ok: false
+mode: agents

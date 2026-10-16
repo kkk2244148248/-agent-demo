@@ -1,0 +1,22 @@
+id: doc_parse
+title: 文档识别
+description: 识别 PDF/图片/扫描件，抽取报价字段，对比客户需求找缺口
+when: 用户上传附件，或要求识别 PDF、表格、OCR、截图、扫描件
+triggers:
+  - 识别
+  - 附件
+  - pdf
+  - ocr
+  - 表格
+  - 截图
+  - 扫描
+  - 报价单
+  - 规格表
+  - 帮我看看这个文件
+tools:
+  - parse_document
+  - extract_quote_fields
+  - doc_vs_requirement
+requires: []
+parallel_ok: false
+mode: agents

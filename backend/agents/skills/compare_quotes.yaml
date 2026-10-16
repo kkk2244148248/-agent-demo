@@ -1,0 +1,19 @@
+id: compare_quotes
+title: 比价建议
+description: 把多家候选工厂的单价、MOQ、交期、LOGO 加价对齐口径后对比，给出选厂建议与谈判点
+when: 用户要比价、哪家便宜、对比一下报价、选哪家
+triggers:
+  - 比价
+  - 比一下价
+  - 哪家便宜
+  - 报价对比
+  - 对比报价
+  - 对比一下
+  - 选哪家
+  - 哪家划算
+tools:
+  - compare_quotes
+  - estimate_cost
+requires: []
+parallel_ok: false
+mode: agents
