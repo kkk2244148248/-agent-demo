@@ -36,3 +36,6 @@ dist-ssr/
 *.swp
 .DS_Store
 Thumbs.db
+
+# ---------- 归档目录中的探索期截图 ----------
+docs/archive/**/_shots/

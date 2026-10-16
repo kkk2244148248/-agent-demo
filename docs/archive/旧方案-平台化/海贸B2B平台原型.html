@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>海贸 HaiMao · B2B出海撮合平台 · 高保真原型</title>
+<style>
+:root{
+  --bg:#f4f6f9;
+  --panel:#ffffff;
+  --panel-2:#fafbfc;
+  --line:#e3e7ee;
+  --line-2:#eef1f6;
+  --text:#151a22;
+  --text-2:#444d5c;
+  --muted:#7c8798;
+  --brand:#0b5cff;
+  --brand-d:#0a4bd1;
+  --brand-l:#eaf1ff;
+  --accent:#ff6a00;
+  --accent-l:#fff2e8;
+  --ok:#12a150;
+  --ok-l:#e8f8ef;
+  --warn:#c97706;
+  --warn-l:#fff7e6;
+  --danger:#dc2626;
+  --danger-l:#fdeeee;
+  --gold:#b7791f;
+  --gold-l:#fdf6e3;
+  --shadow:0 1px 2px rgba(16,24,40,.05),0 4px 14px rgba(16,24,40,.06);
+  --shadow-lg:0 10px 40px rgba(16,24,40,.14);
+  --r:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--text);font-size:13.5px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;font-size:inherit}
+input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+a{color:var(--brand);text-decoration:none}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:#cfd6e0;border-radius:6px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ============ 顶栏 ============ */
+.topbar{
+  position:sticky;top:0;z-index:50;height:58px;background:#fff;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:18px;padding:0 20px;
+}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16px;letter-spacing:.2px;white-space:nowrap}
+.brand .logo{
+  width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:#fff;font-size:15px;font-weight:800;
+  background:linear-gradient(135deg,#0b5cff,#00b3ff);
+}
+.brand small{display:block;font-weight:500;font-size:10px;color:var(--muted);letter-spacing:1.4px;margin-top:-3px}
+.seg{display:flex;background:#f0f3f8;border-radius:9px;padding:3px;gap:2px}
+.seg button{
+  padding:7px 15px;border-radius:7px;font-size:13px;font-weight:600;color:var(--text-2);
+  display:flex;align-items:center;gap:6px;white-space:nowrap;transition:.15s;
+}
+.seg button:hover{color:var(--text)}
+.seg button.on{background:#fff;color:var(--brand);box-shadow:0 1px 3px rgba(16,24,40,.1)}
+.topbar .right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.whoami{display:flex;align-items:center;gap:9px;padding:5px 11px 5px 6px;background:#f5f7fb;border-radius:999px;font-size:12.5px}
+.whoami .av{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#0b5cff,#5b8dff);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+.whoami .org{color:var(--muted);font-size:11px}
+.lang{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.lang button{padding:5px 10px;font-size:12px;color:var(--muted);font-weight:600}
+.lang button.on{background:var(--brand-l);color:var(--brand)}
+
+/* ============ 子导航 ============ */
+.subbar{
+  position:sticky;top:58px;z-index:49;background:#fff;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:4px;padding:0 20px;height:46px;overflow-x:auto;
+}
+.subbar button{
+  padding:6px 12px;border-radius:8px;font-size:13px;color:var(--text-2);white-space:nowrap;font-weight:500;transition:.15s;
+}
+.subbar button:hover{background:#f4f6fa;color:var(--text)}
+.subbar button.on{background:var(--brand);color:#fff;font-weight:600}
+.subbar .divider{width:1px;height:20px;background:var(--line);margin:0 8px}
+
+/* ============ 布局 ============ */
+.main{padding:20px 20px 60px;max-width:1440px;margin:0 auto}
+.row{display:flex;gap:16px}
+.col{flex:1;min-width:0}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g5{grid-template-columns:repeat(5,1fr)}
+@media(max-width:1100px){.g4,.g5{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.card-h{padding:13px 16px;border-bottom:1px solid var(--line-2);display:flex;align-items:center;gap:10px}
+.card-h h3{margin:0;font-size:14px;font-weight:700}
+.card-h .more{margin-left:auto;font-size:12.5px;color:var(--muted)}
+.card-b{padding:16px}
+.card-b.tight{padding:10px}
+.card-b.none{padding:0}
+
+.page-h{display:flex;align-items:flex-end;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.page-h h1{margin:0;font-size:20px;font-weight:800;letter-spacing:-.2px}
+.page-h p{margin:0;color:var(--muted);font-size:13px}
+.page-h .actions{margin-left:auto;display:flex;gap:9px}
+
+/* ============ 通用元件 ============ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:8px 15px;border-radius:8px;font-size:13px;font-weight:600;border:1px solid transparent;transition:.15s;white-space:nowrap;
+}
+.btn.pri{background:var(--brand);color:#fff}
+.btn.pri:hover{background:var(--brand-d)}
+.btn.acc{background:var(--accent);color:#fff}
+.btn.acc:hover{filter:brightness(.94)}
+.btn.ghost{background:#fff;border-color:var(--line);color:var(--text-2)}
+.btn.ghost:hover{border-color:#c3ccdb;color:var(--text)}
+.btn.sm{padding:5px 11px;font-size:12px;border-radius:7px}
+.btn.lg{padding:11px 22px;font-size:14.5px;border-radius:9px}
+.btn.block{width:100%}
+.btn.ok{background:var(--ok);color:#fff}
+.btn.danger{background:#fff;border-color:#f2c4c4;color:var(--danger)}
+.btn.danger:hover{background:var(--danger-l)}
+
+.tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-size:11.5px;font-weight:600;line-height:1.7;white-space:nowrap}
+.tag.b{background:var(--brand-l);color:var(--brand)}
+.tag.o{background:var(--accent-l);color:#c25200}
+.tag.g{background:var(--ok-l);color:#0b7d3e}
+.tag.w{background:var(--warn-l);color:var(--warn)}
+.tag.r{background:var(--danger-l);color:var(--danger)}
+.tag.gold{background:var(--gold-l);color:var(--gold)}
+.tag.gray{background:#f1f3f7;color:var(--text-2)}
+.tag.line{background:#fff;border:1px solid var(--line);color:var(--text-2)}
+
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:11.5px;background:#f2f4f8;color:var(--text-2);font-weight:500}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.tiny{font-size:11px}
+.bold{font-weight:700}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
+.price{color:var(--accent);font-weight:800}
+.blue{color:var(--brand)}
+.green{color:var(--ok)}
+.red{color:var(--danger)}
+hr{border:none;border-top:1px solid var(--line-2);margin:14px 0}
+.spacer{flex:1}
+.nowrap{white-space:nowrap}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{
+  text-align:left;font-weight:600;color:var(--muted);font-size:11.5px;letter-spacing:.4px;
+  padding:10px 12px;border-bottom:1px solid var(--line);background:var(--panel-2);white-space:nowrap;text-transform:uppercase;
+}
+td{padding:11px 12px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+tbody tr:hover{background:#fafbfe}
+tbody tr:last-child td{border-bottom:none}
+
+.field{margin-bottom:13px}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--text-2);margin-bottom:5px}
+.field label .req{color:var(--danger)}
+.inp,select.inp,textarea.inp{
+  width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#fff;outline:none;transition:.15s;
+}
+.inp:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(11,92,255,.1)}
+textarea.inp{resize:vertical;min-height:74px;line-height:1.6}
+.hint{font-size:11.5px;color:var(--muted);margin-top:4px}
+
+.kpi{padding:16px;background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.kpi .lab{font-size:12px;color:var(--muted);font-weight:500;display:flex;align-items:center;gap:5px}
+.kpi .val{font-size:25px;font-weight:800;margin:6px 0 2px;letter-spacing:-.6px}
+.kpi .val small{font-size:13px;font-weight:600;color:var(--muted);margin-left:2px}
+.kpi .sub{font-size:11.5px;color:var(--muted)}
+.kpi.brand{background:linear-gradient(135deg,#0b5cff,#2a7bff);border-color:transparent}
+.kpi.brand .lab,.kpi.brand .sub{color:rgba(255,255,255,.82)}
+.kpi.brand .val{color:#fff}
+
+.bar{height:7px;border-radius:4px;background:#eef1f6;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:var(--brand);transition:width .6s}
+.bar i.o{background:var(--accent)}
+.bar i.g{background:var(--ok)}
+.bar i.r{background:var(--danger)}
+
+.tl{position:relative;padding-left:24px}
+.tl:before{content:"";position:absolute;left:6px;top:5px;bottom:5px;width:2px;background:var(--line)}
+.tl .node{position:relative;padding-bottom:17px}
+.tl .node:last-child{padding-bottom:0}
+.tl .node:before{
+  content:"";position:absolute;left:-22px;top:4px;width:11px;height:11px;border-radius:50%;
+  background:#fff;border:2.5px solid var(--line);box-sizing:border-box;
+}
+.tl .node.done:before{background:var(--ok);border-color:var(--ok)}
+.tl .node.now:before{background:var(--brand);border-color:var(--brand);box-shadow:0 0 0 4px var(--brand-l)}
+.tl .node .tt{font-weight:600;font-size:13px}
+.tl .node .dd{font-size:11.5px;color:var(--muted)}
+
+.thumbs{display:flex;gap:7px}
+.ph{
+  border-radius:9px;background:#f2f5fa;border:1px solid var(--line-2);display:grid;place-items:center;
+  font-size:24px;overflow:hidden;position:relative;
+}
+.ph.a{background:linear-gradient(135deg,#eef3ff,#dfe9ff)}
+.ph.b{background:linear-gradient(135deg,#fff3e8,#ffe3cc)}
+.ph.c{background:linear-gradient(135deg,#e9f8f1,#d5f1e4)}
+.ph.d{background:linear-gradient(135deg,#f5eefe,#e9dcfb)}
+.ph.e{background:linear-gradient(135deg,#fdeef2,#fbdde6)}
+.ph.f{background:linear-gradient(135deg,#eef6fb,#dbeaf7)}
+
+.prod-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);transition:.18s;cursor:pointer;display:flex;flex-direction:column}
+.prod-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:#cfdcf5}
+.prod-card .img{height:132px;font-size:44px}
+.prod-card .bd{padding:11px 12px 13px;display:flex;flex-direction:column;gap:6px;flex:1}
+
+.sup-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);transition:.18s;cursor:pointer}
+.sup-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:#cfdcf5}
+.sup-card .hd{display:flex;gap:11px;align-items:flex-start}
+.sup-card .lg{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;font-size:19px;font-weight:800;color:#fff;flex-shrink:0}
+
+.quote-card{border:1px solid var(--line);border-radius:var(--r);padding:14px;background:#fff;position:relative;transition:.18s}
+.quote-card:hover{border-color:#cfdcf5}
+.quote-card.best{border:2px solid var(--ok);background:linear-gradient(180deg,#f7fdfa,#fff)}
+.quote-card .ribbon{position:absolute;top:-1px;right:14px;background:var(--ok);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:0 0 7px 7px}
+
+.alert{display:flex;gap:11px;padding:12px 14px;border-radius:9px;font-size:12.5px;line-height:1.6;align-items:flex-start}
+.alert .ic{font-size:15px;flex-shrink:0;line-height:1.4}
+.alert.info{background:var(--brand-l);color:#0a3f9e}
+.alert.ok{background:var(--ok-l);color:#0b6b37}
+.alert.warn{background:var(--warn-l);color:#8a5200}
+.alert.danger{background:var(--danger-l);color:#a01c1c}
+.alert.agent{background:linear-gradient(135deg,#f2f0ff,#eaf2ff);color:#3b2a8c;border:1px solid #ddd8ff}
+
+.chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:12.5px;color:var(--text-2);cursor:pointer;transition:.15s}
+.chip:hover{border-color:#c3ccdb}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+
+.side-filter{position:sticky;top:124px}
+.side-filter h4{font-size:12.5px;margin:0 0 8px;font-weight:700;color:var(--text-2)}
+.fgroup{padding:11px 0;border-bottom:1px solid var(--line-2)}
+.fgroup:last-child{border-bottom:none}
+
+.progress-steps{display:flex;gap:0;margin:6px 0 18px;flex-wrap:wrap}
+.pstep{flex:1;min-width:88px;text-align:center;position:relative;padding-top:30px;font-size:11.5px;color:var(--muted)}
+.pstep:before{
+  content:attr(data-n);position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:23px;height:23px;border-radius:50%;background:#eef1f6;color:var(--muted);
+  display:grid;place-items:center;font-size:11px;font-weight:700;z-index:2;
+}
+.pstep:after{content:"";position:absolute;top:11px;left:50%;width:100%;height:2.5px;background:#eef1f6;z-index:1}
+.pstep:last-child:after{display:none}
+.pstep.done:before{background:var(--ok);color:#fff}
+.pstep.done:after{background:var(--ok)}
+.pstep.now:before{background:var(--brand);color:#fff;box-shadow:0 0 0 4px var(--brand-l)}
+.pstep.now{color:var(--brand);font-weight:700}
+.pstep.done{color:var(--ok)}
+
+/* 聊天 / Agent 面板 */
+.agent-fab{
+  position:fixed;right:22px;bottom:22px;z-index:60;width:52px;height:52px;border-radius:16px;
+  background:linear-gradient(135deg,#0b5cff,#6a3cff);color:#fff;font-size:22px;display:grid;place-items:center;
+  box-shadow:0 8px 26px rgba(11,92,255,.4);transition:.2s;
+}
+.agent-fab:hover{transform:scale(1.07)}
+.agent-panel{
+  position:fixed;right:22px;bottom:86px;z-index:60;width:390px;max-height:66vh;background:#fff;
+  border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);display:none;flex-direction:column;overflow:hidden;
+}
+.agent-panel.on{display:flex}
+.agent-panel .ah{padding:12px 15px;border-bottom:1px solid var(--line-2);display:flex;align-items:center;gap:9px;background:linear-gradient(135deg,#f7f9ff,#f2f0ff)}
+.agent-panel .ab{padding:13px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:11px}
+.msg{max-width:90%;padding:9px 12px;border-radius:11px;font-size:12.5px;line-height:1.62}
+.msg.u{align-self:flex-end;background:var(--brand);color:#fff;border-bottom-right-radius:3px}
+.msg.a{align-self:flex-start;background:#f4f6fa;border-bottom-left-radius:3px}
+.msg.a b{color:var(--brand)}
+.agent-panel .af{padding:10px;border-top:1px solid var(--line-2)}
+.agent-panel .af input{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;outline:none}
+
+.banner{
+  border-radius:14px;padding:26px 30px;color:#fff;position:relative;overflow:hidden;
+  background:linear-gradient(120deg,#0b3fbf 0%,#0b5cff 45%,#00a3ff 100%);
+}
+.banner:after{
+  content:"";position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;
+  background:rgba(255,255,255,.09);
+}
+.banner:before{
+  content:"";position:absolute;right:70px;bottom:-90px;width:190px;height:190px;border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+.banner h2{margin:0 0 7px;font-size:23px;font-weight:800;position:relative;letter-spacing:-.3px}
+.banner p{margin:0 0 18px;opacity:.9;font-size:13.5px;position:relative;max-width:640px}
+.searchbox{position:relative;display:flex;background:#fff;border-radius:11px;padding:5px;gap:5px;max-width:660px;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.searchbox input{flex:1;border:none;outline:none;padding:10px 13px;font-size:14px;background:transparent}
+.searchbox select{border:none;outline:none;background:#f4f6fa;border-radius:8px;padding:0 10px;font-size:13px;color:var(--text-2)}
+.hotwords{position:relative;margin-top:13px;font-size:12.5px;opacity:.9;display:flex;gap:14px;flex-wrap:wrap}
+.hotwords b{font-weight:600;opacity:.75;font-weight:500}
+.hotwords span{cursor:pointer;border-bottom:1px dashed rgba(255,255,255,.5)}
+
+.cat-tile{
+  background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:15px 12px;text-align:center;
+  cursor:pointer;transition:.15s;box-shadow:var(--shadow)
+}
+.cat-tile:hover{transform:translateY(-3px);border-color:#cfdcf5;box-shadow:var(--shadow-lg)}
+.cat-tile .em{font-size:25px;display:block;margin-bottom:6px}
+.cat-tile .nm{font-size:12.5px;font-weight:600}
+.cat-tile .ct{font-size:11px;color:var(--muted)}
+
+.funnel{display:flex;flex-direction:column;gap:9px}
+.funnel .frow{display:flex;align-items:center;gap:11px}
+.funnel .flab{width:96px;font-size:12.5px;color:var(--text-2);text-align:right;flex-shrink:0}
+.funnel .fbar{flex:1;height:26px;border-radius:7px;background:#f0f3f8;overflow:hidden;position:relative}
+.funnel .fbar i{display:block;height:100%;border-radius:7px;background:linear-gradient(90deg,#0b5cff,#3c85ff)}
+.funnel .fbar span{position:absolute;left:11px;top:0;line-height:26px;font-size:11.5px;font-weight:700;color:#fff}
+.funnel .fval{width:82px;font-size:12px;color:var(--muted);text-align:right;flex-shrink:0}
+
+.rate{display:flex;gap:2px;font-size:12px;color:#f5a623;align-items:center}
+.rate .n{color:var(--text-2);font-weight:700;margin-left:4px;font-size:12px}
+
+.notice{
+  display:flex;align-items:center;gap:9px;padding:9px 13px;background:var(--warn-l);border:1px solid #f6e0b0;
+  border-radius:9px;font-size:12.5px;color:#8a5200;
+}
+.steps-num{display:flex;gap:0;margin-bottom:18px}
+.snum{flex:1;display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted)}
+.snum i{width:22px;height:22px;border-radius:50%;background:#eef1f6;display:grid;place-items:center;font-style:normal;font-size:11.5px;font-weight:700;flex-shrink:0}
+.snum.on{color:var(--brand);font-weight:700}
+.snum.on i{background:var(--brand);color:#fff}
+.foot{text-align:center;color:var(--muted);font-size:11.5px;padding:26px 0 8px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* =====================================================================
+   海贸 B2B 撮合平台 · 高保真原型
+   三端：采购商 buyer / 供应商 supplier / 平台平台 platform
+   ===================================================================== */
+
+const S = {
+  role:'buyer',
+  page:'buyer-home',
+  lang:'zh',
+  agentOpen:false,
+  agentMsgs:[{r:'a',t:'我是海贸智能中枢。你在采购商视角，我可以帮你<b>选供应商</b>、<b>生成比价报告</b>、<b>核对单据</b>。试试问我："帮我看看这 3 家报价谁最合适"。'}],
+  filter:{cat:'全部', verified:false, gold:false, fast:false}
+};
+
+const ROLES = {
+  buyer:{name:'采购商端',icon:'🌎',who:'Emma Lindberg',org:'Nordic Retail Group · 瑞典',short:'NL',
+    nav:[['buyer-home','首页'],['buyer-search','找货源'],['buyer-rfq-new','发布询盘 RFQ'],['buyer-rfq-list','我的询盘'],
+         ['buyer-quote-compare','报价对比'],['buyer-order','订单与履约'],['buyer-suppliers','我的供应商']]},
+  supplier:{name:'供应商端',icon:'🏭',who:'吴经理',org:'义乌星海家居礼品 · 已认证☑',short:'星',
+    nav:[['sup-dashboard','工作台'],['sup-pool','抢单中心'],['sup-quote','报价管理'],['sup-products','商品管理'],
+         ['sup-orders','订单履约'],['sup-cert','认证中心'],['sup-shop','我的店铺']]},
+  platform:{name:'平台运营端',icon:'🛡️',who:'平台运营 · 陈晓雯',org:'海贸平台 · 运营中台',short:'陈',
+    nav:[['pf-dashboard','数据看板'],['pf-review','入驻审核'],['pf-risk','风控预警'],['pf-content','内容治理'],
+         ['pf-dispute','纠纷仲裁'],['pf-finance','交易结算'],['pf-category','类目与活动']]}
+};
+
+/* ---------------- 数据 ---------------- */
+const SUPPLIERS = [
+  {id:'V-NS06',name:'宁波盛达日用品有限公司',en:'Ningbo Shengda Houseware Co., Ltd.',region:'浙江宁波',cat:'保温杯/餐厨',
+   tier:'gold',score:4.7,resp:'2h',orders:186,ontime:98.2,audit:true,years:11,
+   certs:['FDA','BSCI','ISO9001'],moq:500,lead:'18天',price:4.05,priceText:'报价最优综合',pay:'30%定金 + 见提单',
+   note:'产能 8 万只/月，旺季需提前 30 天锁档期'},
+  {id:'V-YH01',name:'义乌星海家居礼品有限公司',en:'Yiwu Xinghai Houseware & Gifts Co., Ltd.',region:'浙江义乌',cat:'保温杯/玻璃杯',
+   tier:'verified',score:4.0,resp:'6h',orders:94,ontime:94.6,audit:false,years:7,
+   certs:['FDA'],moq:1000,lead:'20天',price:3.82,priceText:'单价最低',pay:'30%定金 + 出货前结清',
+   note:'丝印/激光 LOGO 交期较快；定制色 MOQ 1000'},
+  {id:'V-YK08',name:'永康恒久金属制品厂',en:'Yongkang Hengjiu Metal Works',region:'浙江永康',cat:'保温杯/杯壶',
+   tier:'verified',score:3.6,resp:'14h',orders:41,ontime:88.3,audit:false,years:4,
+   certs:['FDA'],moq:2000,lead:'28天',price:3.45,priceText:'低价但交期风险',pay:'40%定金',
+   note:'MOQ 偏高；历史有 2 次延期记录'}
+];
+
+const PRODUCTS = [
+  {em:'🥤',tone:'a',name:'500ml 304不锈钢保温杯 · 激光LOGO',sup:'宁波盛达日用品',price:'US$4.05',moq:'500',lead:'18天',tags:['FDA','金牌☑'],cat:'保温杯'},
+  {em:'🥤',tone:'b',name:'380ml 便携随行杯 · 丝印定制',sup:'义乌星海家居礼品',price:'US$3.20',moq:'1000',lead:'20天',tags:['FDA','已认证'],cat:'保温杯'},
+  {em:'🎒',tone:'c',name:'12oz 棉帆布手提袋 · 单色丝印',sup:'东莞织造包袋厂',price:'US$1.45',moq:'500',lead:'15天',tags:['已认证','环保面料'],cat:'包袋'},
+  {em:'☂️',tone:'d',name:'折叠伞 · UV涂层 · 满版印花',sup:'义乌晴雨伞业',price:'US$2.35',moq:'1000',lead:'20天',tags:['已认证'],cat:'雨伞'},
+  {em:'👕',tone:'e',name:'重磅纯棉帽衫 · 刺绣LOGO',sup:'绍兴服饰礼品厂',price:'US$9.80',moq:'300',lead:'25天',tags:['已认证','OEKO-TEX'],cat:'服饰'},
+  {em:'🔋',tone:'f',name:'10000mAh 充电宝 · CE/FCC/UN38.3',sup:'深圳能量数码礼品',price:'US$8.60',moq:'500',lead:'22天',tags:['CE','FCC','UN38.3'],cat:'数码'},
+  {em:'🥤',tone:'c',name:'500ml 智能温显保温杯',sup:'宁波盛达日用品',price:'US$5.90',moq:'500',lead:'20天',tags:['FDA','金牌☑'],cat:'保温杯'},
+  {em:'☕',tone:'b',name:'陶瓷马克杯礼盒装 · 双色釉',sup:'义乌星海家居礼品',price:'US$2.85',moq:'1000',lead:'22天',tags:['FDA','已认证'],cat:'餐厨'}
+];
+
+const RFQ_POOL = [
+  {id:'RFQ-20261016-0117',title:'3,000 pcs 500ml stainless steel tumbler with logo',cat:'保温杯',country:'🇸🇪 瑞典',qty:'3,000',target:'US$3.5–4.5',inc:'FOB',deadline:'大货 11-20 前',match:96,
+   spec:'哑光黑 / 304不锈钢 / 500ml / 单色激光或丝印 LOGO / 需 10 天内出样',posted:'2 小时前',quotes:2},
+  {id:'RFQ-20261016-0114',title:'800 pcs 10000mAh power bank for tech conference',cat:'数码',country:'🇺🇸 美国',qty:'800',target:'US$8–11',inc:'FOB 深圳',deadline:'暂定 12-05',match:41,
+   spec:'商务蓝 / ABS+PC / 需 CE+FCC+UN38.3 运输文件',posted:'5 小时前',quotes:4},
+  {id:'RFQ-20261016-0109',title:'2,000 pcs eco canvas tote bag, 1-color print',cat:'包袋',country:'🇯🇵 日本',qty:'2,000',target:'¥6–9',inc:'FOB',deadline:'未明确',match:0,
+   spec:'再生面料优先 / 本白 / 单面单色丝印',posted:'昨天',quotes:6},
+  {id:'RFQ-20261015-0098',title:'1,200 sets member kit: hoodie + tumbler',cat:'服饰',country:'🇩🇪 德国',qty:'1,200 sets',target:'€18–22/set',inc:'FOB',deadline:'2026-03 前',match:0,
+   spec:'欧码帽衫刺绣 LOGO + 500ml 保温杯',posted:'2 天前',quotes:3}
+];
+
+const QUOTES = [
+  {sup:SUPPLIERS[0],unit:4.05,cur:'USD',inc:'FOB 宁波',moq:500,lead:'18天',sample:'7天 / US$35',pay:'30%定金+见提单',valid:'30天',score:4.7,tier:'gold',
+   pros:['响应 2 小时，全场最快','按时交付率 98.2%，近 12 月无延期','已验厂，支持第三方质检','MOQ 仅 500，可分批补单'],
+   cons:['单价高于最低报价 6%','旺季需提前锁档期']},
+  {sup:SUPPLIERS[1],unit:3.82,cur:'USD',inc:'FOB 义乌',moq:1000,lead:'20天',sample:'5天 / US$25',pay:'30%定金+出货前结清',valid:'20天',score:4.0,tier:'verified',
+   pros:['单价最低，3,000 只可省 US$690','打样最快（5 天）','小单经验丰富'],
+   cons:['未验厂，认证仅 FDA','按时交付率 94.6%，有 3 次轻微延期','定制色 MOQ 需 1000']},
+  {sup:SUPPLIERS[2],unit:3.45,cur:'USD',inc:'FOB 宁波',moq:2000,lead:'28天',sample:'9天 / US$20',pay:'40%定金',valid:'15天',score:3.6,tier:'verified',
+   pros:['单价最低，账面上省 US$1,800'],
+   cons:['交期 28 天，**无法满足 11-20 大货**','MOQ 2,000，定金比例 40% 偏高','历史 2 次延期记录，按时交付率 88.3%','响应慢（14 小时）']}
+];
+
+const ORDER_TL = [
+  {t:'PI 合同签署',d:'2026-10-18 · 合同号 HM-PI-20261018-0042（双语）',st:'done'},
+  {t:'支付首款 30% · US$3,645（担保交易）',d:'2026-10-19 · 进入平台监管账户，收货确认后放款',st:'done'},
+  {t:'工厂开产',d:'2026-10-22 · 供应商上传开工照片与排产单',st:'done'},
+  {t:'中期抽检',d:'2026-11-02 · 平台派单质检，抽检 200 只',st:'done'},
+  {t:'完工 + 终检',d:'2026-11-09 · 等待供应商上传终检报告',st:'now'},
+  {t:'报关出口',d:'预计 2026-11-12 · 报关单 / 发票 / 装箱单 / CO 待生成',st:''},
+  {t:'海运订舱',d:'预计 2026-11-14 · 宁波 → 哥德堡 · ETA 2026-12-08',st:''},
+  {t:'买方收货确认 → 平台放款',d:'预计 2026-12-10',st:''},
+  {t:'双方评价 + 复购提醒',d:'Agent 自动跟进',st:''}
+];
+
+const REVIEW_QUEUE = [
+  {id:'AP-20261016-01',org:'潮州市枫溪陶瓷出口有限公司',type:'工厂',region:'广东潮州',submitted:'40 分钟前',
+   risk:{lvl:'warn',score:62,items:['营业执照 OCR 与工商信息一致 ✓','对公打款已验证 ✓','证书「SGS 报告」编号缺失，无法核验 ✗','该主体 30 天内在其他平台有 1 条质量投诉记录 ⚠']},
+   docs:['营业执照','对公账户','SGS 报告(待核)','厂房照片 6 张'],cat:['陶瓷','餐厨']},
+  {id:'AP-20261016-02',org:'深圳市鑫远达科技有限公司',type:'贸易商',region:'广东深圳',submitted:'2 小时前',
+   risk:{lvl:'ok',score:88,items:['三证齐全，工商信息一致 ✓','对公打款已验证 ✓','CE / FCC / UN38.3 证书均在有效期 ✓','法人名下无异常企业 ✓']},
+   docs:['营业执照','对公账户','CE','FCC','UN38.3'],cat:['数码','充电宝']},
+  {id:'AP-20261015-07',org:'KUWAIT TRADING HOUSE W.L.L.',type:'采购商',region:'🇰🇼 科威特',submitted:'昨天',
+   risk:{lvl:'danger',score:31,items:['企业邮箱域名为免费邮箱（gmail）需人工核实 ⚠','注册 IP 与目标市场不符 ⚠','未提供营业执照','同类 IP 段 7 天内注册 5 个账号 ✗']},
+   docs:['邮箱验证'],cat:['礼品','采购商']}
+];
+
+const RISK_ALERTS = [
+  {lvl:'danger',t:'报价异常低：永康恒久 对 RFQ-20261016-0117 报 US$2.60',d:'低于类目均价 36%，疑似劣质品或钓鱼报价，建议要求补充材质证明并核验产能',time:'12 分钟前',act:'要求补充说明'},
+  {lvl:'danger',t:'证书重复挂靠：粤SGS-2024-1188 同时挂在 3 家供应商',d:'同一份 SGS 报告被 3 个主体引用，疑似代运营/挂靠，需核验实际生产主体',time:'1 小时前',act:'冻结派单'},
+  {lvl:'warn',t:'制裁名单命中：1 笔待成交订单收货国为受制裁地区',d:'订单 PO-20261014-0031 收货地为受制裁地区，已被系统自动拦截',time:'3 小时前',act:'转人工复核'},
+  {lvl:'warn',t:'盗图检测：12 个 SKU 图片与义乌某店铺重复度 > 92%',d:'图片指纹比对命中，涉嫌盗用他人商品图',time:'今天 09:12',act:'批量下架'},
+  {lvl:'info',t:'派单响应率下降：数码类目 24h 报价率降至 54%',d:'低于 60% 警戒线，供给不足，建议向该类目补 20 家认证供应商',time:'今天 08:00',act:'查看类目诊断'}
+];
+
+const DISPUTES = [
+  {id:'DP-20261012-003',order:'HM-PO-20261001-0018',buyer:'BrightWave Marketing 🇺🇸',sup:'深圳能量数码礼品',amount:'US$7,040',
+   reason:'质量不符：800 只充电宝中 63 只无法充电（7.9%）',status:'arbitrating',escrow:'已冻结 US$7,040',
+   digest:'争议焦点：① 抽检不合格率是否超出合同约定的 3% 允差；② 供应商主张为运输震动导致。证据：买方质检报告(第三方) / 供应商出厂 QC 记录 / 物流签收单。合同第 6.2 条约定 AQL 2.5，实测不合格率 7.9% 已超标。',agent:'建议：支持部分退款 15%（US$1,056），货物不退运，双方各承担一半运费'},
+  {id:'DP-20261008-002',order:'HM-PO-20260928-0011',buyer:'Alpine Outdoor Club 🇩🇪',sup:'绍兴服饰礼品厂',amount:'€11,760',
+   reason:'交期违约：4,000 套会员礼包延期 21 天',status:'resolved',escrow:'已放款 US$12,410',
+   digest:'争议焦点：延期责任归属。证据：双方沟通记录显示买方在 09-30 追加变更包装，供应商主张工期顺延合理。合同第 4.4 条约定变更工单顺延条款。',agent:'裁决结果：驳回全额退款，供应商补偿 3%（€353）作为商誉补偿'}
+];
+
+const PENDING_TODOS = [
+  {t:'RFQ-20261016-0117 需求为你主营品类「保温杯」，匹配度 96%',tag:'高优',tone:'r'},
+  {t:'该询盘 3 小时内 2 家已报价，剩余报价窗口',tag:'提醒',tone:'w'},
+  {t:'「宁波盛达」报价草稿待你确认外发（Agent 已生成）',tag:'待审批',tone:'b'},
+  {t:'样品 V-YH01-S-0912 已签收，等待买家确认',tag:'跟进',tone:'g'}
+];
+
+/* ---------------- 工具函数 ---------------- */
+const $ = (s)=>document.querySelector(s);
+const stars = (n)=>{let s='';for(let i=1;i<=5;i++){s+= i<=Math.round(n) ? '★' : '☆';}return '<span class="rate">'+s+'<span class="n">'+n.toFixed(1)+'</span></span>';};
+const tierTag=(t)=> t==='gold'?'<span class="tag gold">★ 金牌供应商</span>': t==='verified'?'<span class="tag b">☑ 已认证</span>':'<span class="tag gray">未认证</span>';
+const riskTag=(l)=> l==='ok'?'<span class="tag g">低风险</span>': l==='warn'?'<span class="tag w">中风险</span>':'<span class="tag r">高风险</span>';
+const alertCls=(l)=> l==='danger'?'danger': l==='warn'?'warn': l==='ok'?'ok':'info';
+const alertIc=(l)=> l==='danger'?'⛔': l==='warn'?'⚠️': l==='ok'?'✅':'💡';
+
+function go(page){S.page=page; if(page.startsWith('buyer'))S.role='buyer'; if(page.startsWith('sup'))S.role='supplier'; if(page.startsWith('pf'))S.role='platform'; window.scrollTo({top:0}); render();}
+function setRole(r){S.role=r; go(ROLES[r].nav[0][0]);}
+function toggleAgent(){S.agentOpen=!S.agentOpen; renderAgent();}
+
+/* ---------------- 顶栏 / 子导航 ---------------- */
+function topbar(){
+  const R=ROLES[S.role];
+  return `
+  <div class="topbar">
+    <div class="brand"><div class="logo">海</div><div>海贸 HaiMao<small>B2B SOURCING PLATFORM</small></div></div>
+    <div class="seg">
+      ${Object.entries(ROLES).map(([k,v])=>`<button class="${S.role===k?'on':''}" onclick="setRole('${k}')">${v.icon} ${v.name}</button>`).join('')}
+    </div>
+    <div class="right">
+      <div class="lang"><button class="${S.lang==='zh'?'on':''}" onclick="setLang('zh')">中</button><button class="${S.lang==='en'?'on':''}" onclick="setLang('en')">EN</button></div>
+      <div class="whoami"><div class="av">${R.short}</div><div><div class="bold" style="font-size:12.5px">${R.who}</div><div class="org">${R.org}</div></div></div>
+    </div>
+  </div>
+  <div class="subbar">
+    ${R.nav.map(([p,l],i)=>`<button class="${S.page===p?'on':''}" onclick="go('${p}')">${l}</button>`).join('')}
+    <div class="divider"></div>
+    <button onclick="go('common-kb')">知识库</button>
+    <button onclick="go('common-approval')">审批闸门</button>
+  </div>`;
+}
+function setLang(l){S.lang=l; render();}
+
+/* ---------------- 采购商端 ---------------- */
+function buyerHome(){
+  return `
+  <div class="banner">
+    <h2>一次询盘，24 小时内拿到 3–5 家已认证中国工厂报价</h2>
+    <p>覆盖促销礼品 · 定制周边 · 中小批量快反。全程担保交易，单据与沟通留痕，平台对交易结果负责。</p>
+    <div class="searchbox">
+      <select><option>全部类目</option><option>保温杯</option><option>包袋</option><option>数码</option><option>服饰</option><option>雨伞</option><option>餐厨</option></select>
+      <input placeholder="搜商品 / 供应商 / 或直接描述你的需求，如：3000 pcs 500ml tumbler with logo">
+      <button class="btn pri lg" onclick="go('buyer-search')">搜索</button>
+    </div>
+    <div class="hotwords"><b>热门：</b><span>保温杯定制</span><span>帆布袋</span><span>充电宝 UN38.3</span><span>折叠伞</span><span>帽衫刺绣</span><span>圣诞礼品</span></div>
+  </div>
+
+  <div class="grid g5" style="margin-top:22px">
+    ${[['🥤','保温杯','1,284 SKU'],['🎒','包袋','2,910 SKU'],['🔋','数码','1,506 SKU'],['👕','服饰','3,220 SKU'],['☂️','雨伞','620 SKU']]
+      .map(([e,n,c])=>`<div class="cat-tile" onclick="go('buyer-search')"><span class="em">${e}</span><div class="nm">${n}</div><div class="ct">${c}</div></div>`).join('')}
+  </div>
+
+  <div class="grid g4" style="margin-top:22px">
+    <div class="kpi brand"><div class="lab">已认证中国供应商</div><div class="val">3,862</div><div class="sub">其中 214 家已实地验厂</div></div>
+    <div class="kpi"><div class="lab">平均报价响应</div><div class="val">6.4<small>小时</small></div><div class="sub">24h 报价率 82%</div></div>
+    <div class="kpi"><div class="lab">累计担保成交</div><div class="val">US$41.8<small>M</small></div><div class="sub">担保交易占比 73%</div></div>
+    <div class="kpi"><div class="lab">平均买家评分</div><div class="val">4.6<small>/5</small></div><div class="sub">基于 12,470 条评价</div></div>
+  </div>
+
+  <div class="card" style="margin-top:22px">
+    <div class="card-h"><h3>为「促销礼品」推荐的热门货源</h3><span class="more">基于你的采购画像：瑞典 · 圣诞礼品 · US$3–5 单价</span></div>
+    <div class="card-b"><div class="grid g4">${PRODUCTS.slice(0,4).map(prodCard).join('')}</div></div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <div class="card-h"><h3>平台认证的优质供应商</h3><span class="more">按信用分排序 · 全部通过企业实名认证</span></div>
+    <div class="card-b"><div class="grid g3">${SUPPLIERS.map(supCard).join('')}</div></div>
+  </div>
+
+  <div class="grid g2" style="margin-top:18px">
+    <div class="card"><div class="card-h"><h3>为什么选海贸</h3></div><div class="card-b" style="display:flex;flex-direction:column;gap:13px">
+      <div class="alert ok"><span class="ic">🛡️</span><div><b>担保交易</b>：货款进平台监管账户，收货确认后才放款给供应商，纠纷可仲裁退款。</div></div>
+      <div class="alert info"><span class="ic">🔍</span><div><b>供应商认证</b>：营业执照 + 对公打款 + 资质证书三重核验；金牌供应商额外经过实地验厂。</div></div>
+      <div class="alert agent"><span class="ic">🤖</span><div><b>智能比价</b>：收到多家报价后，Agent 自动生成对比矩阵，标注价格、交期、认证与风险差异。</div></div>
+      <div class="alert info"><span class="ic">🌐</span><div><b>无语言障碍</b>：站内沟通自动中英互译，所有沟通记录留痕作为纠纷证据。</div></div>
+    </div></div>
+    <div class="card"><div class="card-h"><h3>三步走完寻源</h3></div><div class="card-b">
+      <div class="steps-num" style="flex-direction:column;gap:14px">
+        <div class="snum on"><i>1</i><div><div>发布 RFQ 询盘</div><div class="tiny muted">描述需求、数量、目标价、交期，中英均可</div></div></div>
+        <div class="snum on"><i>2</i><div><div>24h 内收到多家认证工厂报价</div><div class="tiny muted">平台按类目与产能智能派单，报价互相不可见</div></div></div>
+        <div class="snum on"><i>3</i><div><div>用 Agent 比价后挑一家下单</div><div class="tiny muted">打样 → 签 PI → 担保支付 → 生产 → 验货 → 发货</div></div></div>
+      </div>
+      <button class="btn acc block lg" style="margin-top:6px" onclick="go('buyer-rfq-new')">立即发布询盘 RFQ</button>
+    </div></div>
+  </div>
+  <div class="foot">海贸 HaiMao · B2B 出海撮合平台 · 原型演示数据，非真实交易</div>`;
+}
+function prodCard(p){
+  return `<div class="prod-card" onclick="go('buyer-product')">
+    <div class="img ph ${p.tone}">${p.em}</div>
+    <div class="bd">
+      <div style="font-size:13px;font-weight:600;line-height:1.45;min-height:38px">${p.name}</div>
+      <div class="tiny muted">${p.sup}</div>
+      <div class="price" style="font-size:16px">${p.price}<span class="tiny muted" style="font-weight:500"> /pc FOB</span></div>
+      <div class="tiny muted">起订 ${p.moq} pcs · 交期 ${p.lead}</div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">${p.tags.map(t=>`<span class="tag ${t.includes('金牌')?'gold':'line'}">${t}</span>`).join('')}</div>
+    </div>
+  </div>`;
+}
+function supCard(s){
+  const col = s.tier==='gold'?'linear-gradient(135deg,#b7791f,#e0a83b)': s.tier==='verified'?'linear-gradient(135deg,#0b5cff,#4b8bff)':'linear-gradient(135deg,#94a3b8,#cbd5e1)';
+  return `<div class="sup-card" onclick="go('buyer-quote-compare')">
+    <div class="hd">
+      <div class="lg" style="background:${col}">${s.name[0]}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:13.5px;line-height:1.4">${s.name}</div>
+        <div class="tiny muted">${s.region} · 经营 ${s.years} 年 · ${s.cat}</div>
+        <div style="margin-top:5px;display:flex;gap:5px;flex-wrap:wrap">${tierTag(s.tier)}${s.audit?'<span class="tag g">已验厂</span>':''}${s.certs.slice(0,2).map(c=>`<span class="tag line">${c}</span>`).join('')}</div>
+      </div>
+    </div>
+    <hr>
+    <div class="grid" style="grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">
+      <div><div class="tiny muted">信用分</div><div class="bold" style="font-size:14px;color:var(--brand)">${s.score}</div></div>
+      <div><div class="tiny muted">24h 响应</div><div class="bold" style="font-size:14px">${s.resp}</div></div>
+      <div><div class="tiny muted">按时交付</div><div class="bold" style="font-size:14px">${s.ontime}%</div></div>
+    </div>
+    <hr style="margin:11px 0">
+    <div class="tiny muted">起订 ${s.moq} pcs · 交期 ${s.lead} · 累计成交 ${s.orders} 单</div>
+  </div>`;
+}
+
+function buyerSearch(){
+  const list = PRODUCTS.filter(p=>S.filter.cat==='全部'||p.cat===S.filter.cat);
+  return `
+  <div class="page-h"><h1>找货源</h1><p>共 <b>3,862</b> 家认证供应商 · <b>9,540</b> 个 SKU</p>
+    <div class="actions"><button class="btn acc" onclick="go('buyer-rfq-new')">📝 没找到？发布 RFQ 让工厂来报</button></div></div>
+  <div class="row">
+    <div style="width:216px;flex-shrink:0">
+      <div class="card side-filter"><div class="card-b">
+        <div class="fgroup"><h4>类目</h4>
+          ${['全部','保温杯','包袋','数码','服饰','雨伞','餐厨'].map(c=>`<div style="margin-bottom:5px"><label style="display:flex;gap:7px;align-items:center;cursor:pointer;font-size:12.5px"><input type="radio" name="cat" ${S.filter.cat===c?'checked':''} onclick="S.filter.cat='${c}';render()"> ${c}</label></div>`).join('')}
+        </div>
+        <div class="fgroup"><h4>供应商资质</h4>
+          <div style="margin-bottom:6px"><label style="display:flex;gap:7px;align-items:center;cursor:pointer;font-size:12.5px"><input type="checkbox" ${S.filter.verified?'checked':''} onclick="S.filter.verified=!S.filter.verified;render()"> 仅看已认证 ☑</label></div>
+          <div style="margin-bottom:6px"><label style="display:flex;gap:7px;align-items:center;cursor:pointer;font-size:12.5px"><input type="checkbox" ${S.filter.gold?'checked':''} onclick="S.filter.gold=!S.filter.gold;render()"> 仅看金牌 ★（已验厂）</label></div>
+          <div><label style="display:flex;gap:7px;align-items:center;cursor:pointer;font-size:12.5px"><input type="checkbox" ${S.filter.fast?'checked':''} onclick="S.filter.fast=!S.filter.fast;render()"> 24h 内可报价</label></div>
+        </div>
+        <div class="fgroup"><h4>交期</h4>
+          ${['不限','15 天内','20 天内','30 天内'].map((x,i)=>`<div style="margin-bottom:5px"><label style="display:flex;gap:7px;align-items:center;cursor:pointer;font-size:12.5px"><input type="radio" name="lead" ${i===0?'checked':''}> ${x}</label></div>`).join('')}
+        </div>
+        <div class="fgroup"><h4>出口认证</h4>
+          <div style="display:flex;gap:5px;flex-wrap:wrap">${['FDA','CE','FCC','BSCI','UN38.3','OEKO-TEX'].map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+        </div>
+      </div></div>
+    </div>
+    <div class="col">
+      <div style="display:flex;gap:8px;margin-bottom:13px;flex-wrap:wrap;align-items:center">
+        <span class="chip on">综合排序</span><span class="chip">价格最低</span><span class="chip">交期最快</span><span class="chip">信用分最高</span><span class="chip">成交最多</span>
+        <span class="spacer"></span><span class="tiny muted">找到 ${list.length} 个结果</span>
+      </div>
+      <div class="card" style="margin-bottom:14px"><div class="card-b" style="padding:12px 14px">
+        <div class="alert agent"><span class="ic">🤖</span><div><b>Agent 提示</b>：该需求（3,000 pcs 保温杯、目标 US$3.5–4.5、11-20 前到货）建议直接发 RFQ——现货 SKU 起订量普遍 500–1000，且交期 18–22 天刚好卡线。<b>发布 RFQ 可获得针对性报价</b>。</div></div>
+      </div></div>
+      <div class="grid g3">${list.map(prodCard).join('')}</div>
+    </div>
+  </div>`;
+}
+
+function buyerProduct(){
+  const s=SUPPLIERS[0];
+  return `
+  <div class="page-h"><h1>500ml 304不锈钢保温杯 · 激光 LOGO 定制</h1>
+    <div class="actions"><button class="btn ghost" onclick="go('buyer-search')">← 返回结果</button></div></div>
+  <div class="row">
+    <div style="flex:0 0 420px">
+      <div class="ph a" style="height:340px;font-size:96px;border-radius:12px">🥤</div>
+      <div class="thumbs" style="margin-top:10px">
+        ${['a','b','c','e'].map(t=>`<div class="ph ${t}" style="width:78px;height:78px;font-size:30px">🥤</div>`).join('')}
+      </div>
+      <div class="card" style="margin-top:14px"><div class="card-b">
+        <div class="grid g3" style="text-align:center">
+          <div><div class="tiny muted">起订量</div><div class="bold">500 pcs</div></div>
+          <div><div class="tiny muted">交期</div><div class="bold">18 天</div></div>
+          <div><div class="tiny muted">累计成交</div><div class="bold">186 单</div></div>
+        </div>
+      </div></div>
+    </div>
+    <div class="col">
+      <div class="card"><div class="card-b">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div class="lg" style="width:46px;height:46px;border-radius:11px;display:grid;place-items:center;color:#fff;font-size:20px;font-weight:800;background:linear-gradient(135deg,#b7791f,#e0a83b)">宁</div>
+          <div style="flex:1">
+            <div class="bold" style="font-size:15px">${s.name}</div>
+            <div class="tiny muted">${s.en}</div>
+            <div style="margin-top:7px;display:flex;gap:6px;flex-wrap:wrap">${tierTag('gold')}<span class="tag g">已实地验厂</span><span class="tag line">ISO9001</span><span class="tag line">BSCI</span><span class="tag line">FDA</span></div>
+          </div>
+          <div style="text-align:right">
+            <div class="tiny muted">信用分</div>
+            <div class="bold" style="font-size:22px;color:var(--brand)">${s.score}</div>
+          </div>
+        </div>
+        <hr>
+        <div class="grid g4" style="text-align:center">
+          <div><div class="tiny muted">24h 响应</div><div class="bold">${s.resp}</div></div>
+          <div><div class="tiny muted">按时交付</div><div class="bold green">${s.ontime}%</div></div>
+          <div><div class="tiny muted">经营年限</div><div class="bold">${s.years} 年</div></div>
+          <div><div class="tiny muted">所在地</div><div class="bold">${s.region}</div></div>
+        </div>
+      </div></div>
+
+      <div class="card" style="margin-top:14px"><div class="card-h"><h3>产品规格</h3><span class="more">支持按需定制</span></div><div class="card-b">
+        <table>
+          <tbody>
+            <tr><td class="muted" style="width:130px">容量</td><td>500ml</td><td class="muted" style="width:130px">材质</td><td>304 食品级不锈钢内胆</td></tr>
+            <tr><td class="muted">表面工艺</td><td>哑光喷塑 / 电泳 / 局部拉丝</td><td class="muted">LOGO 工艺</td><td>激光雕刻 / 丝印 / 烫金</td></tr>
+            <tr><td class="muted">颜色</td><td>哑光黑、珍珠白、香槟金、军绿</td><td class="muted">定制色</td><td>可接潘通，定制色 MOQ 1,000</td></tr>
+            <tr><td class="muted">打样周期</td><td>3–5 天</td><td class="muted">大货周期</td><td>15–25 天</td></tr>
+            <tr><td class="muted">包装</td><td>白盒 / 彩盒 / 礼盒（可定制）</td><td class="muted">认证</td><td>FDA 食品接触、BSCI</td></tr>
+          </tbody>
+        </table>
+      </div></div>
+
+      <div class="card" style="margin-top:14px"><div class="card-h"><h3>参考价格区间</h3><span class="more">FOB 宁波 · 按数量阶梯</span></div><div class="card-b none">
+        <table><thead><tr><th>数量</th><th>单价区间</th><th>LOGO 单色</th><th>预计交期</th></tr></thead><tbody>
+          <tr><td>500 – 999</td><td class="price">US$4.80 – 5.20</td><td>含</td><td>18–20 天</td></tr>
+          <tr><td>1,000 – 2,999</td><td class="price">US$4.05 – 4.60</td><td>含</td><td>18 天</td></tr>
+          <tr><td>3,000 – 9,999</td><td class="price">US$3.75 – 4.05</td><td>含</td><td>18–22 天</td></tr>
+          <tr><td>10,000+</td><td class="price">面议</td><td>含</td><td>25 天起</td></tr>
+        </tbody></table>
+      </div></div>
+
+      <div class="card" style="margin-top:14px"><div class="card-b" style="display:flex;gap:10px">
+        <button class="btn pri lg" onclick="go('buyer-rfq-new')">📩 向该供应商发起询盘</button>
+        <button class="btn ghost lg" onclick="go('buyer-suppliers')">⭐ 收藏供应商</button>
+        <button class="btn ghost lg" onclick="go('buyer-quote-compare')">📊 已有报价？去比价</button>
+      </div></div>
+    </div>
+  </div>`;
+}
+
+function buyerRfqNew(){
+  return `
+  <div class="page-h"><h1>发布 RFQ 询盘</h1><p>填写需求 → 平台智能派单给匹配的认证工厂 → 24h 内收取报价</p></div>
+  <div class="steps-num">
+    <div class="snum on"><i>1</i><div>描述需求</div></div>
+    <div class="snum"><i>2</i><div>平台派单</div></div>
+    <div class="snum"><i>3</i><div>收取报价</div></div>
+    <div class="snum"><i>4</i><div>比价选商</div></div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="card"><div class="card-h"><h3>需求描述</h3><span class="more">🌐 中英文均可，Agent 自动结构化</span></div>
+      <div class="card-b">
+        <div class="field"><label>一句话标题 <span class="req">*</span></label>
+          <input class="inp" value="3,000 pcs 500ml stainless steel tumbler with 1-color logo"></div>
+        <div class="field"><label>详细需求 <span class="req">*</span></label>
+          <textarea class="inp" style="min-height:112px">We need 3,000 pcs of 500ml stainless tumblers for Christmas store gifts.
+Budget around USD 3.5-4.5 /pc FOB.
+One-color logo laser or silk print is fine.
+Need samples in 10 days, bulk before Nov 20.
+Please advise which factories can do this and rough quotes.</textarea>
+          <div class="hint">💡 可直接粘贴海外客户的原始邮件，Agent 会自动抽取出规格、数量、目标价与交期</div></div>
+        <div class="grid g3">
+          <div class="field"><label>类目 <span class="req">*</span></label><select class="inp"><option>保温杯</option><option>包袋</option><option>数码</option><option>服饰</option><option>雨伞</option></select></div>
+          <div class="field"><label>数量 <span class="req">*</span></label><input class="inp" value="3000"></div>
+          <div class="field"><label>单位</label><select class="inp"><option>pcs</option><option>sets</option><option>ctns</option></select></div>
+        </div>
+        <div class="grid g3">
+          <div class="field"><label>目标单价</label><input class="inp" value="3.5 – 4.5"></div>
+          <div class="field"><label>币种</label><select class="inp"><option>USD</option><option>EUR</option><option>RMB</option></select></div>
+          <div class="field"><label>贸易术语</label><select class="inp"><option>FOB</option><option>CIF</option><option>EXW</option><option>DDP</option></select></div>
+        </div>
+        <div class="grid g3">
+          <div class="field"><label>目的国 / 港口 <span class="req">*</span></label><input class="inp" value="瑞典 · 哥德堡"></div>
+          <div class="field"><label>需样品时间</label><input class="inp" value="10 天内"></div>
+          <div class="field"><label>需大货时间</label><input class="inp" value="2026-11-20 前"></div>
+        </div>
+        <div class="grid g2">
+          <div class="field"><label>颜色</label><input class="inp" value="哑光黑"></div>
+          <div class="field"><label>材质</label><input class="inp" value="304 不锈钢"></div>
+        </div>
+        <div class="field"><label>附件（图纸 / 参考图 / 规格书）</label>
+          <div style="border:1.5px dashed var(--line);border-radius:9px;padding:20px;text-align:center;color:var(--muted);background:var(--panel-2)">
+            <div style="font-size:22px">📎</div><div class="small">点击上传 或 拖拽文件到此处</div><div class="tiny">支持 PDF / JPG / PNG / DWG，单个 ≤ 20MB</div>
+          </div></div>
+      </div></div>
+    </div>
+    <div style="width:320px;flex-shrink:0">
+      <div class="card"><div class="card-h"><h3>发布设置</h3></div><div class="card-b">
+        <div class="field"><label>可见范围</label>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <label style="display:flex;gap:7px;font-size:12.5px;cursor:pointer"><input type="radio" name="vis" checked> 平台智能派单（推荐）<span class="tiny muted">仅匹配供应商可见</span></label>
+            <label style="display:flex;gap:7px;font-size:12.5px;cursor:pointer"><input type="radio" name="vis"> 公开询盘池<span class="tiny muted">所有认证供应商可见</span></label>
+            <label style="display:flex;gap:7px;font-size:12.5px;cursor:pointer"><input type="radio" name="vis"> 定向邀约<span class="tiny muted">仅我指定的供应商可见</span></label>
+          </div></div>
+        <div class="field"><label>期望报价家数</label><select class="inp"><option>3 – 5 家（推荐）</option><option>6 – 10 家</option><option>不限</option></select></div>
+        <div class="field"><label>报价截止</label><input class="inp" value="2026-10-19 18:00"></div>
+        <label style="display:flex;gap:7px;font-size:12.5px;cursor:pointer;margin-bottom:14px"><input type="checkbox" checked> 开启担保交易保护</label>
+        <button class="btn acc block lg" onclick="go('buyer-rfq-list')">发布询盘</button>
+        <div class="hint" style="margin-top:9px">发布后 24 小时内平均收到 <b>4.3</b> 家报价</div>
+      </div></div>
+      <div class="card" style="margin-top:14px"><div class="card-b">
+        <div class="alert agent"><span class="ic">🤖</span><div><b>Agent 预检</b>：已从你的描述中识别出 12 个结构化字段（数量/颜色/材质/认证/交期…）。<br>目标价 US$3.5–4.5 与当前类目均价 US$3.9–4.8 基本吻合，预计可收到 <b>4–6</b> 家报价。</div></div>
+      </div></div>
+    </div>
+  </div>`;
+}
+
+function buyerRfqList(){
+  const rows=[
+    ['RFQ-20261016-0117','3,000 pcs 500ml stainless steel tumbler with logo','保温杯','🇸🇪 瑞典','3,000','US$3.5–4.5','报价中','b',3,'2026-10-16 08:12'],
+    ['RFQ-20261010-0084','5,000 pcs folding umbrella, UV coating','雨伞','🇦🇪 阿联酋','5,000','US$2.2–3.0','已选定供应商','g',7,'2026-10-10 11:20'],
+    ['RFQ-20260928-0041','1,200 sets member kit: hoodie + tumbler','服饰','🇩🇪 德国','1,200 sets','€18–22','已成交','g',9,'2026-09-28 10:08'],
+    ['RFQ-20260920-0012','10,000 pcs kraft paper gift box','包袋','🇺🇸 美国','10,000','US$0.45–0.7','已关闭','gray',0,'2026-09-20 15:33']
+  ];
+  return `
+  <div class="page-h"><h1>我的询盘</h1><p>共 4 条询盘 · 1 条正在报价中</p>
+    <div class="actions"><button class="btn acc" onclick="go('buyer-rfq-new')">＋ 发布新询盘</button></div></div>
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="kpi"><div class="lab">进行中询盘</div><div class="val">1</div><div class="sub">已收 3 家报价</div></div>
+    <div class="kpi"><div class="lab">平均报价家数</div><div class="val">4.3<small>家</small></div><div class="sub">高于平台均值 3.1 家</div></div>
+    <div class="kpi"><div class="lab">询盘→成交率</div><div class="val">50<small>%</small></div><div class="sub">4 单中成交 2 单</div></div>
+    <div class="kpi"><div class="lab">累计成交额</div><div class="val">US$28.6<small>K</small></div><div class="sub">担保交易占比 100%</div></div>
+  </div>
+  <div class="card"><div class="card-b none"><table>
+    <thead><tr><th>询盘号</th><th>标题</th><th>类目</th><th>目的国</th><th>数量</th><th>目标价</th><th>状态</th><th>已报价</th><th>发布时间</th><th></th></tr></thead>
+    <tbody>${rows.map(r=>`<tr>
+      <td class="mono">${r[0]}</td><td style="max-width:260px"><div style="font-weight:600">${r[1]}</div></td>
+      <td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td class="nowrap">${r[5]}</td>
+      <td><span class="tag ${r[7]}">${r[6]}</span></td>
+      <td>${r[8]} 家</td><td class="tiny muted nowrap">${r[9]}</td>
+      <td>${r[7]==='b'?'<button class="btn pri sm" onclick="go(\'buyer-quote-compare\')">查看报价</button>':'<button class="btn ghost sm">详情</button>'}</td>
+    </tr>`).join('')}</tbody></table></div></div>`;
+}
+
+function buyerQuoteCompare(){
+  return `
+  <div class="page-h"><h1>报价对比 · RFQ-20261016-0117</h1>
+    <p>3,000 pcs 500ml 保温杯 · 🇸🇪 瑞典 · FOB · 目标 US$3.5–4.5 · 大货 11-20 前</p>
+    <div class="actions"><button class="btn ghost" onclick="go('buyer-rfq-list')">← 返回询盘</button></div></div>
+
+  <div class="card" style="margin-bottom:16px"><div class="card-b">
+    <div class="alert agent"><span class="ic">🤖</span><div>
+      <b>Agent 比价结论</b>：3 家报价中，<b>宁波盛达（US$4.05 / 18 天 / 已验厂 / 信用分 4.7）综合最优</b>，虽单价高于最低价 6%，但交期满足 11-20 大货窗口且风险最低。<br>
+      ⚠️ <b>永康恒久（US$3.45）虽然单价最低，但交期 28 天无法满足你的 11-20 大货要求</b>，且历史有 2 次延期记录——不建议用于本次圣诞档期。<br>
+      💡 若你更看重成本且可接受 20 天交期，义乌星海（US$3.82）可省 US$690，但未验厂，建议加做第三方质检（约 US$120）。
+    </div></div>
+  </div></div>
+
+  <div class="grid g3" style="margin-bottom:16px">
+    ${QUOTES.map((q,i)=>`
+      <div class="quote-card ${i===0?'best':''}">
+        ${i===0?'<div class="ribbon">Agent 推荐</div>':''}
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div class="lg" style="width:38px;height:38px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:16px;font-weight:800;background:${q.tier==='gold'?'linear-gradient(135deg,#b7791f,#e0a83b)':'linear-gradient(135deg,#0b5cff,#4b8bff)'}">${q.sup.name[0]}</div>
+          <div style="flex:1;min-width:0"><div class="bold" style="font-size:13px">${q.sup.name}</div>
+          <div class="tiny muted">${q.sup.region}</div></div>
+        </div>
+        <div style="margin:9px 0 5px;display:flex;gap:5px;flex-wrap:wrap">${tierTag(q.tier)}${q.sup.audit?'<span class="tag g">已验厂</span>':''}</div>
+        <div style="font-size:26px;font-weight:800;color:var(--accent);letter-spacing:-.8px;margin:8px 0 2px">${q.cur} ${q.unit.toFixed(2)}<span class="tiny muted" style="font-weight:500"> /pc</span></div>
+        <div class="tiny muted">${q.inc} · 总价约 ${q.cur} ${(q.unit*3000).toLocaleString()}</div>
+        <hr>
+        <div style="display:flex;flex-direction:column;gap:5px;font-size:12px">
+          <div style="display:flex"><span class="muted" style="width:76px">最小起订</span><span class="bold">${q.moq} pcs</span>${q.moq<=500?'<span class="tag g" style="margin-left:6px">满足</span>':''}</div>
+          <div style="display:flex"><span class="muted" style="width:76px">大货交期</span><span class="bold">${q.lead}</span>${q.lead==='28天'?'<span class="tag r" style="margin-left:6px">超期</span>':'<span class="tag g" style="margin-left:6px">可满足</span>'}</div>
+          <div style="display:flex"><span class="muted" style="width:76px">打样</span><span>${q.sample}</span></div>
+          <div style="display:flex"><span class="muted" style="width:76px">付款</span><span>${q.pay}</span></div>
+          <div style="display:flex"><span class="muted" style="width:76px">报价有效期</span><span>${q.valid}</span></div>
+          <div style="display:flex;align-items:center"><span class="muted" style="width:76px">信用分</span>${stars(q.score)}</div>
+        </div>
+        <hr>
+        <div class="small" style="color:var(--ok)"><b>优势</b></div>
+        <ul style="margin:4px 0 10px;padding-left:17px;font-size:12px;color:var(--text-2);line-height:1.75">${q.pros.map(p=>`<li>${p}</li>`).join('')}</ul>
+        <div class="small" style="color:var(--warn)"><b>风险 / 劣势</b></div>
+        <ul style="margin:4px 0 12px;padding-left:17px;font-size:12px;color:var(--text-2);line-height:1.75">${q.cons.map(p=>`<li>${p.replace(/\*\*/g,'')}</li>`).join('')}</ul>
+        <div style="display:flex;gap:7px">
+          <button class="btn ${i===0?'pri':'ghost'} sm" style="flex:1" onclick="go('buyer-order')">选定该供应商</button>
+          <button class="btn ghost sm" onclick="S.agentOpen=true;renderAgent()">💬 沟通</button>
+        </div>
+      </div>`).join('')}
+  </div>
+
+  <div class="card"><div class="card-h"><h3>横向对比矩阵</h3><span class="more">Agent 生成 · 数据来源为供应商填报 + 平台历史履约记录</span></div>
+  <div class="card-b none"><table>
+    <thead><tr><th>对比项</th>${QUOTES.map(q=>`<th>${q.sup.name.slice(0,8)}</th>`).join('')}<th>说明</th></tr></thead>
+    <tbody>
+      <tr><td class="muted">单价（FOB）</td>${QUOTES.map(q=>`<td class="bold ${q.unit<3.8?'green':''}">US$ ${q.unit.toFixed(2)}</td>`).join('')}<td class="tiny muted">义乌星海最低</td></tr>
+      <tr><td class="muted">3,000 pcs 总价</td>${QUOTES.map(q=>`<td>US$ ${(q.unit*3000).toLocaleString()}</td>`).join('')}<td class="tiny muted">差价最大 US$1,800</td></tr>
+      <tr><td class="muted">大货交期</td>${QUOTES.map(q=>`<td class="${q.lead==='28天'?'red bold':''}">${q.lead}</td>`).join('')}<td class="tiny muted">需 ≤ 25 天才能赶上 11-20</td></tr>
+      <tr><td class="muted">最小起订</td>${QUOTES.map(q=>`<td>${q.moq}</td>`).join('')}<td class="tiny muted">3,000 pcs 均满足</td></tr>
+      <tr><td class="muted">认证资质</td>${QUOTES.map(q=>`<td class="tiny">${q.sup.certs.join(' / ')}</td>`).join('')}<td class="tiny muted">FDA 为必需</td></tr>
+      <tr><td class="muted">实地验厂</td>${QUOTES.map(q=>`<td>${q.sup.audit?'<span class="tag g">已验厂</span>':'<span class="tag gray">未验厂</span>'}</td>`).join('')}<td class="tiny muted">金牌供应商强制验厂</td></tr>
+      <tr><td class="muted">信用分</td>${QUOTES.map(q=>`<td class="bold" style="color:var(--brand)">${q.score}</td>`).join('')}<td class="tiny muted">平台综合模型</td></tr>
+      <tr><td class="muted">按时交付率</td>${QUOTES.map(q=>`<td class="${q.sup.ontime<90?'red':''}">${q.sup.ontime}%</td>`).join('')}<td class="tiny muted">&lt; 90% 属风险区</td></tr>
+      <tr><td class="muted">24h 响应</td>${QUOTES.map(q=>`<td>${q.sup.resp}</td>`).join('')}<td class="tiny muted">越快沟通成本越低</td></tr>
+      <tr><td class="muted">担保额度</td>${QUOTES.map(q=>`<td>US$ ${q.tier==='gold'?'120K':'60K'}</td>`).join('')}<td class="tiny muted">金牌供应商额度更高</td></tr>
+      <tr><td class="muted">Agent 评分</td>${QUOTES.map((q,i)=>`<td><span class="tag ${i===0?'g':i===1?'b':'w'}">${i===0?'推荐 ★':i===1?'可选':'不建议'}</span></td>`).join('')}<td class="tiny muted">综合价格/交期/风险</td></tr>
+    </tbody></table></div></div>
+  <div class="foot">报价互相不可见 · 平台不对任何一方泄露竞争对手价格</div>`;
+}
+
+function buyerOrder(){
+  return `
+  <div class="page-h"><h1>订单与履约 · HM-PO-20261018-0042</h1>
+    <p>宁波盛达日用品有限公司 · 3,000 pcs 保温杯 · US$ 12,150 · 担保交易</p>
+    <div class="actions"><button class="btn ghost">下载 PI 合同</button><button class="btn pri">联系供应商</button></div></div>
+
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="kpi brand"><div class="lab">担保资金状态</div><div class="val">US$3,645</div><div class="sub">首款 30% 已进监管账户</div></div>
+    <div class="kpi"><div class="lab">订单总金额</div><div class="val">US$12,150</div><div class="sub">FOB 宁波 · 3,000 × US$4.05</div></div>
+    <div class="kpi"><div class="lab">预计到货</div><div class="val">12-08</div><div class="sub">宁波 → 哥德堡 海运</div></div>
+    <div class="kpi"><div class="lab">当前节点</div><div class="val" style="font-size:17px">完工 + 终检</div><div class="sub">已过 4 / 9 个节点</div></div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="card"><div class="card-h"><h3>履约时间线</h3><span class="more">每一步都有平台留痕，可作为纠纷证据</span></div>
+      <div class="card-b"><div class="tl">
+        ${ORDER_TL.map(n=>`<div class="node ${n.st}"><div class="tt">${n.t}</div><div class="dd">${n.d}</div></div>`).join('')}
+      </div></div></div>
+
+      <div class="card" style="margin-top:16px"><div class="card-h"><h3>出口单证</h3><span class="more">Agent 可自动生成 · 目的地 🇸🇪 瑞典（欧盟）</span></div>
+      <div class="card-b none"><table><thead><tr><th>单证</th><th>状态</th><th>生成方式</th><th></th></tr></thead><tbody>
+        ${[['商业发票 Commercial Invoice','已生成','模板自动生成'],['装箱单 Packing List','已生成','模板自动生成'],['PI 形式发票','已签署','双语合同模板'],['原产地证 CO','待生成','报关阶段'],['海运提单 B/L','待出','货代签发'],['CE 符合性声明','待生成','合规 Agent 生成']]
+          .map(r=>`<tr><td>${r[0]}</td><td><span class="tag ${r[1]==='已生成'||r[1]==='已签署'?'g':'gray'}">${r[1]}</span></td><td class="tiny muted">${r[2]}</td><td><button class="btn ghost sm">查看</button></td></tr>`).join('')}
+      </tbody></table></div></div>
+    </div>
+    <div style="width:330px;flex-shrink:0">
+      <div class="card"><div class="card-h"><h3>担保交易保护</h3></div><div class="card-b">
+        <div class="alert ok"><span class="ic">🛡️</span><div>你的货款在平台监管账户中，<b>确认收货后才放款给供应商</b>。若出现质量问题或交期违约，可在收货后 15 天内发起纠纷。</div></div>
+        <hr>
+        <div style="display:flex;flex-direction:column;gap:9px;font-size:12.5px">
+          <div style="display:flex"><span class="muted" style="flex:1">首款（30%）</span><b>US$3,645 ✓ 已托管</b></div>
+          <div style="display:flex"><span class="muted" style="flex:1">尾款（70%）</span><b>US$8,505 待支付</b></div>
+          <div style="display:flex"><span class="muted" style="flex:1">担保额度</span><b>US$120,000</b></div>
+          <div style="display:flex"><span class="muted" style="flex:1">争议窗口</span><b>收货后 15 天</b></div>
+        </div>
+      </div></div>
+      <div class="card" style="margin-top:14px"><div class="card-h"><h3>供应商履约画像</h3></div><div class="card-b">
+        <div class="tiny muted">按时交付率（近 12 月）</div>
+        <div class="bar" style="margin:6px 0 12px"><i class="g" style="width:98%"></i></div>
+        <div class="tiny muted">质量投诉率</div>
+        <div class="bar" style="margin:6px 0 12px"><i style="width:4%"></i></div>
+        <div class="tiny muted">24h 响应达标率</div>
+        <div class="bar" style="margin:6px 0 12px"><i class="g" style="width:96%"></i></div>
+        <div class="tiny muted">历史纠纷败诉</div>
+        <div class="bar" style="margin:6px 0 4px"><i class="g" style="width:0%"></i></div>
+        <div class="bold green" style="font-size:12.5px">0 次</div>
+      </div></div>
+      <div class="card" style="margin-top:14px"><div class="card-b">
+        <button class="btn ghost block" style="margin-bottom:8px">发起纠纷</button>
+        <button class="btn ghost block" style="margin-bottom:8px">申请延长收货</button>
+        <button class="btn pri block">确认收货并放款</button>
+        <div class="hint" style="text-align:center;margin-top:8px">当前节点未到，暂不可确认收货</div>
+      </div></div>
+    </div>
+  </div>`;
+}
+
+function buyerSuppliers(){
+  return `
+  <div class="page-h"><h1>我的供应商</h1><p>已合作 6 家 · 收藏 12 家</p></div>
+  <div class="grid g3">${SUPPLIERS.map(s=>`
+    <div class="card"><div class="card-b">
+      <div style="display:flex;gap:10px">
+        <div class="lg" style="width:42px;height:42px;border-radius:10px;display:grid;place-items:center;color:#fff;font-size:18px;font-weight:800;background:${s.tier==='gold'?'linear-gradient(135deg,#b7791f,#e0a83b)':'linear-gradient(135deg,#0b5cff,#4b8bff)'}">${s.name[0]}</div>
+        <div style="flex:1"><div class="bold">${s.name}</div><div class="tiny muted">${s.region}</div>
+        <div style="margin-top:5px;display:flex;gap:5px">${tierTag(s.tier)}${s.audit?'<span class="tag g">已验厂</span>':''}</div></div>
+      </div>
+      <hr>
+      <div class="grid" style="grid-template-columns:repeat(3,1fr);text-align:center;gap:6px">
+        <div><div class="tiny muted">合作订单</div><div class="bold">${Math.round(s.orders/12)}</div></div>
+        <div><div class="tiny muted">累计金额</div><div class="bold">US$${(s.orders*0.42).toFixed(0)}K</div></div>
+        <div><div class="tiny muted">我的评分</div><div class="bold">${s.score}</div></div>
+      </div>
+      <hr>
+      <div style="display:flex;gap:7px"><button class="btn ghost sm" style="flex:1">查看店铺</button><button class="btn pri sm" style="flex:1" onclick="go('buyer-rfq-new')">再次询盘</button></div>
+    </div></div>`).join('')}</div>`;
+}
+
+/* ---------------- 供应商端 ---------------- */
+function supDashboard(){
+  return `
+  <div class="page-h"><h1>供应商工作台</h1><p>义乌星海家居礼品有限公司 · <span class="tag b">☑ 已认证</span> · 距离金牌还差 1 次实地验厂</p>
+    <div class="actions"><button class="btn ghost">升级金牌供应商</button><button class="btn pri" onclick="go('sup-pool')">去抢单</button></div></div>
+
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="kpi brand"><div class="lab">今日推荐询盘</div><div class="val">7</div><div class="sub">匹配你主营类目「保温杯」</div></div>
+    <div class="kpi"><div class="lab">24h 报价响应率</div><div class="val">88<small>%</small></div><div class="sub">平台均值 76%，优秀</div></div>
+    <div class="kpi"><div class="lab">本月成交</div><div class="val">US$46.2<small>K</small></div><div class="sub">较上月 +18%</div></div>
+    <div class="kpi"><div class="lab">信用分</div><div class="val">4.0</div><div class="sub">排名类目 前 32%</div></div>
+  </div>
+
+  <div class="grid g3" style="margin-bottom:16px">
+    <div class="card"><div class="card-b">
+      <div class="tiny muted">信用分构成</div>
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px">
+        ${[['成交表现',38,40],['响应速度',22,25],['买家评价',17,20],['资质完整度',8,15]].map(([n,a,b])=>`
+          <div><div style="display:flex;font-size:12px;margin-bottom:4px"><span>${n}</span><span class="spacer"></span><b>${a}/${b}</b></div><div class="bar"><i style="width:${a/b*100}%"></i></div></div>`).join('')}
+      </div>
+      <div class="hint" style="margin-top:11px">💡 补齐 BSCI 认证可 +7 分，接近金牌门槛（4.5）</div>
+    </div></div>
+    <div class="card"><div class="card-h"><h3>待办</h3></div><div class="card-b" style="display:flex;flex-direction:column;gap:10px">
+      ${PENDING_TODOS.map(t=>`<div style="display:flex;gap:9px;align-items:flex-start;padding:9px;background:var(--panel-2);border-radius:8px">
+        <span class="tag ${t.tone}">${t.tag}</span><div class="small" style="flex:1">${t.t}</div></div>`).join('')}
+    </div></div>
+    <div class="card"><div class="card-h"><h3>询盘转化漏斗</h3><span class="more">近 30 天</span></div><div class="card-b">
+      <div class="funnel">
+        ${[['收到派单',42,42],['已报价',31,42],['进入谈判',12,42],['成交',5,42]].map(([n,v,m])=>`
+          <div class="frow"><div class="flab">${n}</div><div class="fbar"><i style="width:${v/m*100}%"></i><span>${v}</span></div><div class="fval">${(v/m*100).toFixed(0)}%</div></div>`).join('')}
+      </div>
+      <hr>
+      <div class="alert warn" style="margin-top:0"><span class="ic">⚠️</span><div>报价→成交率 16.1%，低于类目均值 22%。Agent 分析：报价普遍未附<b>认证文件</b>，买家信心不足。</div></div>
+    </div></div>
+  </div>
+
+  <div class="card"><div class="card-h"><h3>Agent 帮你干这些活</h3><span class="more">基于平台智能中枢（供应商侧 Agent）</span></div>
+  <div class="card-b"><div class="grid g4">
+    ${[['✍️','一键生成报价单','读取 RFQ 规格 + 你的价目表，3 秒生成专业英文报价（含 Incoterms / 有效期 / 付款条款）'],
+       ['🌐','英文回复代写','自动中英互译，符合欧美商务礼仪，随信附上你已认证的资质文件'],
+       ['📈','选品与定价建议','对比同类目成交价，提示你的报价偏高/偏低及 MOQ 优化空间'],
+       ['📄','认证材料整理','自动整理证书清单与有效期提醒，缺失项直接告诉你怎么办']]
+      .map(([e,t,d])=>`<div style="padding:13px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:10px">
+        <div style="font-size:21px">${e}</div><div class="bold" style="margin:6px 0 4px;font-size:13px">${t}</div><div class="tiny muted">${d}</div></div>`).join('')}
+  </div></div></div>`;
+}
+
+function supPool(){
+  return `
+  <div class="page-h"><h1>抢单中心</h1><p>平台按你的主营类目、产能与信用分智能派单 · 报价互相不可见</p>
+    <div class="actions"><span class="pill">🎯 今日推荐 7 条</span><span class="pill">⚡ 剩余报价窗口 3 条</span></div></div>
+  <div class="card" style="margin-bottom:14px"><div class="card-b">
+    <div class="alert agent"><span class="ic">🤖</span><div><b>Agent 提示</b>：RFQ-20261016-0117（3,000 pcs 保温杯 / 瑞典 / 目标 US$3.5–4.5）与你的产能与历史成交价高度匹配（匹配度 96%）。已有 2 家报价，<b>建议 3 小时内响应</b>以争取进入买家短名单。</div></div>
+  </div></div>
+  <div style="display:flex;flex-direction:column;gap:13px">
+    ${RFQ_POOL.map((r,i)=>`
+    <div class="card" style="${i===0?'border:2px solid var(--brand)':''}"><div class="card-b">
+      <div style="display:flex;gap:14px;align-items:flex-start">
+        <div class="ph ${['a','b','c','d'][i%4]}" style="width:64px;height:64px;font-size:28px;flex-shrink:0">📦</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <span class="mono tiny muted">${r.id}</span>
+            ${r.match>=90?'<span class="tag o">🎯 匹配度 '+r.match+'%</span>':r.match>0?'<span class="tag gray">匹配度 '+r.match+'%</span>':'<span class="tag gray">非主营类目</span>'}
+            ${r.quotes>=2?'<span class="tag w">已有 '+r.quotes+' 家报价</span>':'<span class="tag g">暂无报价</span>'}
+            <span class="pill">${r.country}</span>
+          </div>
+          <div class="bold" style="font-size:14px;margin:7px 0 4px">${r.title}</div>
+          <div class="small muted">${r.spec}</div>
+          <div style="display:flex;gap:18px;margin-top:9px;flex-wrap:wrap;font-size:12px">
+            <div><span class="muted">数量</span> <b>${r.qty}</b></div>
+            <div><span class="muted">目标价</span> <b class="price">${r.target}</b></div>
+            <div><span class="muted">术语</span> <b>${r.inc}</b></div>
+            <div><span class="muted">交期</span> <b>${r.deadline}</b></div>
+            <div><span class="muted">发布</span> ${r.posted}</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px;width:150px;flex-shrink:0">
+          <button class="btn ${i===0?'pri':'ghost'} block" onclick="go('sup-quote')">${i===0?'⚡ 立即报价':'报价'}</button>
+          <button class="btn ghost block sm">查看详情</button>
+          <button class="btn ghost block sm">不感兴趣</button>
+        </div>
+      </div>
+    </div></div>`).join('')}
+  </div>`;
+}
+
+function supQuote(){
+  return `
+  <div class="page-h"><h1>报价 · RFQ-20261016-0117</h1><p>3,000 pcs 500ml 保温杯 · 🇸🇪 瑞典 · FOB 宁波 · 需 11-20 前大货</p>
+    <div class="actions"><button class="btn ghost" onclick="go('sup-pool')">← 返回抢单</button></div></div>
+  <div class="row">
+    <div class="col">
+      <div class="card" style="margin-bottom:14px"><div class="card-b">
+        <div class="alert agent"><span class="ic">🤖</span><div><b>Agent 已根据你的价目表生成报价草稿</b>（3,000 pcs 档位：US$4.05/pc FOB 宁波）。同时提示：你的报价比类目均价低 4%，属合理竞争区间；MOQ 可标 500 以增加吸引力。</div></div>
+      </div></div>
+      <div class="card"><div class="card-h"><h3>报价单</h3><span class="more">中英文双语自动生成</span></div><div class="card-b">
+        <div class="grid g3">
+          <div class="field"><label>单价 <span class="req">*</span></label><input class="inp" value="4.05"></div>
+          <div class="field"><label>币种</label><select class="inp"><option>USD</option><option>EUR</option><option>RMB</option></select></div>
+          <div class="field"><label>贸易术语</label><select class="inp"><option>FOB 宁波</option><option>EXW 义乌</option><option>CIF 哥德堡</option></select></div>
+        </div>
+        <div class="grid g3">
+          <div class="field"><label>最小起订量</label><input class="inp" value="500"></div>
+          <div class="field"><label>大货交期</label><input class="inp" value="18 天"></div>
+          <div class="field"><label>报价有效期</label><input class="inp" value="30 天"></div>
+        </div>
+        <div class="grid g2">
+          <div class="field"><label>打样费 / 打样周期</label><input class="inp" value="US$35 / 7 天（下大单可退）"></div>
+          <div class="field"><label>付款条款</label><input class="inp" value="30% 定金 + 见提单副本结清"></div>
+        </div>
+        <div class="field"><label>报价说明（将自动翻译为英文给买家）</label>
+          <textarea class="inp">3000 只 US$4.05/pc FOB 宁波，含单色激光 LOGO。我方已通过 FDA 食品接触认证与 BSCI 验厂，MOQ 500 pcs，18 天可出大货，支持第三方质检。</textarea>
+          <div class="hint">🌐 英文版本：3000 pcs at US$4.05/pc FOB Ningbo, including 1-color laser logo. FDA food-contact certified and BSCI audited. MOQ 500 pcs, 18-day bulk lead time, third-party inspection supported.</div></div>
+        <div class="field"><label>随附资质文件</label>
+          <div style="display:flex;gap:7px;flex-wrap:wrap"><span class="chip on">✓ FDA 认证</span><span class="chip on">✓ BSCI 验厂报告</span><span class="chip on">✓ ISO9001</span><span class="chip">+ 添加</span></div>
+          <div class="hint">💡 附上认证文件的报价，成交率平均高出 41%</div></div>
+      </div></div>
+      <div class="card" style="margin-top:14px"><div class="card-b" style="display:flex;gap:10px">
+        <button class="btn ghost">存为草稿</button>
+        <button class="btn pri" onclick="go('sup-quote-list')">提交外发审批</button>
+        <span class="hint" style="align-self:center">报价需经企业内审批后才能发给买家（防止业务员随意承诺）</span>
+      </div></div>
+    </div>
+    <div style="width:300px;flex-shrink:0">
+      <div class="card"><div class="card-h"><h3>买家需求原文</h3></div><div class="card-b">
+        <div class="small" style="color:var(--text-2);line-height:1.75;background:var(--panel-2);padding:11px;border-radius:8px">
+          We need 3,000 pcs of 500ml stainless tumblers for Christmas store gifts.<br>Budget around USD 3.5-4.5 /pc FOB.<br>One-color logo laser or silk print is fine.<br>Need samples in 10 days, bulk before Nov 20.
+        </div>
+        <hr>
+        <div class="tiny muted">结构化字段（Agent 抽取）</div>
+        <table style="margin-top:6px"><tbody>
+          ${[['数量','3,000 pcs'],['目标价','US$3.5–4.5'],['术语','FOB'],['颜色','哑光黑'],['材质','304 不锈钢'],['容量','500ml'],['打样','10 天内'],['大货','11-20 前'],['目的国','瑞典']]
+            .map(([k,v])=>`<tr><td class="muted tiny" style="padding:6px 4px">${k}</td><td class="tiny" style="padding:6px 4px;font-weight:600;text-align:right">${v}</td></tr>`).join('')}
+        </tbody></table>
+      </div></div>
+      <div class="card" style="margin-top:14px"><div class="card-b">
+        <div class="tiny muted">买家画像</div>
+        <div class="bold" style="margin:6px 0 9px">Nordic Retail Group 🇸🇪</div>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:12px">
+          <div style="display:flex"><span class="muted" style="flex:1">历史询盘</span><b>14 条</b></div>
+          <div style="display:flex"><span class="muted" style="flex:1">成交订单</span><b>8 单</b></div>
+          <div style="display:flex"><span class="muted" style="flex:1">平均客单</span><b>US$12.4K</b></div>
+          <div style="display:flex"><span class="muted" style="flex:1">付款及时性</span><b class="green">98%</b></div>
+          <div style="display:flex"><span class="muted" style="flex:1">买家信用</span><b class="green">优</b></div>
+        </div>
+        <div class="alert ok" style="margin-top:11px"><span class="ic">✅</span><div>优质买家，历史无纠纷，建议优先响应</div></div>
+      </div></div>
+    </div>
+  </div>`;
+}
+
+function supQuoteList(){
+  const rows=[
+    ['Q-20261016-0231','RFQ-20261016-0117','3,000 pcs 保温杯','US$4.05','待审批','w'],
+    ['Q-20261015-0188','RFQ-20261015-0098','1,200 sets 会员礼包','€19.5','已发送 · 待回复','b'],
+    ['Q-20261012-0142','RFQ-20261012-0071','2,000 pcs 玻璃杯','US$2.30','已中标','g'],
+    ['RFQ-20261010-0084 报价·雨伞','RFQ-20261010-0084','5,000 pcs 折叠伞','US$2.55','未中标','gray'],
+    ['Q-20261008-0119','RFQ-20261008-0055','800 pcs 保温杯礼盒','US$6.80','已成交','g']
+  ];
+  return `
+  <div class="page-h"><h1>报价管理</h1><p>共 31 条 · 待审批 1 条</p></div>
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="kpi"><div class="lab">待审批</div><div class="val">1</div><div class="sub">等待企业内审批外发</div></div>
+    <div class="kpi"><div class="lab">已发送</div><div class="val">18</div><div class="sub">等待买家反馈</div></div>
+    <div class="kpi"><div class="lab">中标率</div><div class="val">22<small>%</small></div><div class="sub">类目均值 18%</div></div>
+    <div class="kpi"><div class="lab">平均响应时长</div><div class="val">4.2<small>h</small></div><div class="sub">优于平台均值 6.4h</div></div>
+  </div>
+  <div class="card"><div class="card-b none"><table>
+    <thead><tr><th>报价号</th><th>对应询盘</th><th>商品</th><th>单价</th><th>状态</th><th></th></tr></thead>
+    <tbody>${rows.map(r=>`<tr><td class="mono tiny">${r[0]}</td><td class="mono tiny muted">${r[1]}</td><td>${r[2]}</td><td class="price">${r[3]}</td>
+      <td><span class="tag ${r[5]}">${r[4]}</span></td>
+      <td>${r[4]==='待审批'?'<button class="btn pri sm" onclick="go(\'common-approval\')">去审批</button>':'<button class="btn ghost sm">查看</button>'}</td></tr>`).join('')}</tbody></table></div></div>`;
+}
+
+function supProducts(){
+  const p=PRODUCTS;
+  return `
+  <div class="page-h"><h1>商品管理</h1><p>已上架 12 个 SKU · 审核中 1 个 · 本月曝光 24,180 次</p>
+    <div class="actions"><button class="btn ghost">批量导入</button><button class="btn pri">＋ 发布新商品</button></div></div>
+  <div class="card" style="margin-bottom:14px"><div class="card-b">
+    <div class="alert agent"><span class="ic">🤖</span><div><b>Agent 优化建议</b>：① 你的 3 个 SKU 缺少<b>英文长描述</b>，曝光转化率低于同行 32%，可一键生成；② 「500ml 保温杯」主图建议换成白底实拍图（当前为场景图，搜索权重低）；③ 建议补充 BSCI 认证以提升搜索加权。</div></div>
+  </div></div>
+  <div class="card"><div class="card-b none"><table>
+    <thead><tr><th style="width:56px"></th><th>商品</th><th>类目</th><th>起订</th><th>参考价</th><th>曝光/询盘</th><th>状态</th><th>操作</th></tr></thead>
+    <tbody>${p.slice(0,5).map((x,i)=>`<tr>
+      <td><div class="ph ${x.tone}" style="width:42px;height:42px;font-size:19px">${x.em}</div></td>
+      <td><div style="font-weight:600">${x.name}</div><div class="tiny muted">SKU-${1000+i*7} · 更新于 ${i+1} 天前</div></td>
+      <td>${x.cat}</td><td>${x.moq}</td><td class="price">${x.price}</td>
+      <td><div class="small">曝光 ${(24180/(i+1.7)).toFixed(0)}</div><div class="tiny muted">询盘 ${Math.max(1,9-i)}</div></td>
+      <td><span class="tag ${i===3?'w':'g'}">${i===3?'审核中':'已上架'}</span></td>
+      <td><button class="btn ghost sm">编辑</button> <button class="btn ghost sm">${i===3?'撤回':'下架'}</button></td>
+    </tr>`).join('')}</tbody></table></div></div>`;
+}
+
+function supOrders(){
+  return `
+  <div class="page-h"><h1>订单履约</h1><p>进行中 3 单 · 待发货 1 单</p></div>
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="kpi brand"><div class="lab">待处理</div><div class="val">1</div><div class="sub">HM-PO-20261018-0042 待上传终检</div></div>
+    <div class="kpi"><div class="lab">本月成交</div><div class="val">US$46.2<small>K</small></div><div class="sub">5 单</div></div>
+    <div class="kpi"><div class="lab">按时交付率</div><div class="val">94.6<small>%</small></div><div class="sub">低于金标线 97%</div></div>
+    <div class="kpi"><div class="lab">待收货款</div><div class="val">US$8.5<small>K</small></div><div class="sub">托管中，收货后放款</div></div>
+  </div>
+  <div class="card" style="margin-bottom:16px"><div class="card-b">
+    <div class="alert warn"><span class="ic">⚠️</span><div><b>交付预警</b>：HM-PO-20261018-0042 距合同交期还有 5 天，<b>终检报告尚未上传</b>。逾期将影响你的按时交付率与信用分。建议今日完成终检并上传。</div></div>
+  </div></div>
+  <div class="card"><div class="card-h"><h3>订单 HM-PO-20261018-0042 · 履约节点</h3><span class="more">买家：Nordic Retail Group 🇸🇪 · US$12,150</span></div>
+  <div class="card-b">
+    <div class="progress-steps">
+      ${['签合同','收首款','开产','中期抽检','完工终检','报关','发运','收货放款'].map((s,i)=>`<div class="pstep ${i<4?'done':i===4?'now':''}" data-n="${i+1}">${s}</div>`).join('')}
+    </div>
+    <div class="grid g2">
+      <div class="card" style="box-shadow:none;border:1px solid var(--line)"><div class="card-h"><h3>待办：上传终检报告</h3></div><div class="card-b">
+        <div class="field"><label>终检报告（PDF）</label><div style="border:1.5px dashed var(--line);border-radius:9px;padding:15px;text-align:center;color:var(--muted)">📎 点击上传终检报告</div></div>
+        <div class="field"><label>出货照片</label><div style="border:1.5px dashed var(--line);border-radius:9px;padding:15px;text-align:center;color:var(--muted)">📷 上传装箱/大货照片</div></div>
+        <button class="btn pri block">提交并通知买家</button>
+      </div></div>
+      <div class="card" style="box-shadow:none;border:1px solid var(--line)"><div class="card-h"><h3>平台提供的履约支持</h3></div><div class="card-b" style="display:flex;flex-direction:column;gap:11px">
+        <div class="alert info"><span class="ic">📄</span><div><b>一键生成出口单据</b>：商业发票、装箱单由平台按订单数据自动生成，无需重复填写。</div></div>
+        <div class="alert info"><span class="ic">🚢</span><div><b>货代比价</b>：平台已接入 6 家货代，宁波→哥德堡当前最优报价 US$1,240/20GP。</div></div>
+        <div class="alert ok"><span class="ic">🛡️</span><div><b>担保放款</b>：买家确认收货后自动放款，无需催款。</div></div>
+        <div class="alert info"><span class="ic">📋</span><div><b>报关资料合规校验</b>：合规 Agent 已核对 HS 编码与瑞典进口要求，CE 声明需补充。</div></div>
+      </div></div>
+    </div>
+  </div></div>`;
+}
+
+function supCert(){
+  return `
+  <div class="page-h"><h1>认证中心</h1><p>认证越完整，派单越多、信用分越高、担保额度越大</p>
+    <div class="actions"><button class="btn pri">+ 提交新认证</button></div></div>
+  <div class="card" style="margin-bottom:16px"><div class="card-b">
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <div style="text-align:center"><div style="font-size:34px;font-weight:800;color:var(--brand)">4.0</div><div class="tiny muted">当前信用分</div></div>
+      <div style="flex:1;min-width:200px">
+        <div style="display:flex;font-size:12.5px;margin-bottom:6px"><span>距离 <b class="gold">金牌供应商 ★</b> 还差 <b>0.5 分</b></span><span class="spacer"></span><span class="muted">评分线 4.5</span></div>
+        <div class="bar" style="height:10px"><i style="width:89%"></i></div>
+        <div class="hint" style="margin-top:8px">💡 完成「实地验厂」可 +0.3，补齐「BSCI 认证」可 +0.2 → 即可达标</div>
+      </div>
+      <div style="text-align:center"><div class="bold" style="font-size:18px">US$60K</div><div class="tiny muted">当前担保额度</div></div>
+      <div style="text-align:center"><div class="bold" style="font-size:18px;color:var(--gold)">US$120K</div><div class="tiny muted">金牌额度</div></div>
+    </div>
+  </div></div>
+  <div class="grid g3">
+    ${[['营业执照','已核验','g','2026-03-11 通过工商信息比对'],
+       ['对公打款验证','已核验','g','2026-03-12 对公账户打款成功'],
+       ['FDA 食品接触认证','有效','g','有效期至 2027-06-30'],
+       ['ISO9001','有效','g','有效期至 2028-01-15'],
+       ['BSCI 验厂报告','未提交','gray','提交后可 +0.2 信用分'],
+       ['实地验厂','可申请','w','平台安排验厂员到场，费用 ¥2,800']]
+      .map(([n,st,t,d])=>`<div class="card"><div class="card-b">
+        <div style="display:flex;align-items:center;gap:9px"><div class="bold" style="flex:1">${n}</div><span class="tag ${t}">${st}</span></div>
+        <div class="tiny muted" style="margin-top:8px">${d}</div>
+        ${t==='gray'||t==='w'?'<button class="btn pri sm block" style="margin-top:11px">立即提交</button>':'<button class="btn ghost sm block" style="margin-top:11px">查看凭证</button>'}
+      </div></div>`).join('')}
+  </div>`;
+}
+
+function supShop(){
+  return `
+  <div class="page-h"><h1>我的店铺</h1><p>买家看到的就是这一页 · 完善度 78%</p>
+    <div class="actions"><button class="btn ghost">预览买家视角</button><button class="btn pri">编辑店铺</button></div></div>
+  <div class="row">
+    <div class="col">
+      <div class="card"><div class="card-b" style="padding:0">
+        <div class="ph a" style="height:130px;font-size:40px;border-radius:10px 10px 0 0">🏭</div>
+        <div style="padding:16px;margin-top:-30px">
+          <div style="display:flex;gap:12px;align-items:flex-end">
+            <div class="lg" style="width:64px;height:64px;border-radius:14px;display:grid;place-items:center;color:#fff;font-size:26px;font-weight:800;background:linear-gradient(135deg,#0b5cff,#4b8bff);border:3px solid #fff">星</div>
+            <div style="flex:1"><div class="bold" style="font-size:17px">义乌星海家居礼品有限公司</div><div class="tiny muted">Yiwu Xinghai Houseware & Gifts Co., Ltd.</div></div>
+            <button class="btn ghost sm">分享店铺</button>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">${tierTag('verified')}<span class="tag line">FDA</span><span class="tag line">经营 7 年</span><span class="tag line">浙江义乌</span></div>
+          <hr>
+          <div class="grid g4" style="text-align:center">
+            <div><div class="tiny muted">信用分</div><div class="bold" style="color:var(--brand);font-size:16px">4.0</div></div>
+            <div><div class="tiny muted">累计成交</div><div class="bold" style="font-size:16px">94 单</div></div>
+            <div><div class="tiny muted">24h 响应</div><div class="bold" style="font-size:16px">88%</div></div>
+            <div><div class="tiny muted">按时交付</div><div class="bold" style="font-size:16px">94.6%</div></div>
+          </div>
+          <hr>
+          <div class="small muted">主营：保温杯、玻璃杯、餐具礼盒 · 支持丝印 / 激光 / 烫金 LOGO 定制 · 打样 3–5 天 · 大货 15–25 天</div>
+        </div>
+      </div></div>
+      <div class="card" style="margin-top:14px"><div class="card-h"><h3>在售商品</h3><span class="more">共 12 个 SKU</span></div>
+      <div class="card-b"><div class="grid g3">${PRODUCTS.slice(0,3).map(prodCard).join('')}</div></div></div>
+    </div>
+    <div style="width:300px;flex-shrink:0">
+      <div class="card"><div class="card-h"><h3>店铺完善度</h3></div><div class="card-b">
+        <div class="bar" style="height:10px"><i class="o" style="width:78%"></i></div>
+        <div class="tiny muted" style="margin-top:7px">78% · 还有 3 项待完善</div>
+        <hr>
+        <div style="display:flex;flex-direction:column;gap:9px;font-size:12.5px">
+          ${[['企业简介（英文）','待补充',false],['厂房/产线照片','已上传 6 张',true],['主要客户案例','待补充',false],['BSCI 认证','未提交',false],['联系方式','已完成',true]]
+            .map(([a,b,c])=>`<div style="display:flex;align-items:center;gap:8px"><span class="dot" style="background:${c?'var(--ok)':'#d5dbe5'}"></span><span style="flex:1">${a}</span><span class="tiny ${c?'green':'muted'}">${b}</span></div>`).join('')}
+        </div>
+        <button class="btn pri block" style="margin-top:13px">让 Agent 帮我补全</button>
+      </div></div>
+      <div class="card" style="margin-top:14px"><div class="card-h"><h3>买家评价</h3><span class="more">近 90 天 41 条</span></div><div class="card-b" style="display:flex;flex-direction:column;gap:12px">
+        ${[['Nordic Retail Group','🇸🇪','沟通顺畅，交期准时，LOGO 做得比样图好看。','5.0'],
+           ['Gulf Insurance Promo','🇦🇪','价格有竞争力，但包装需要再加强。','4.0'],
+           ['Sakura Beauty JP','🇯🇵','样品 5 天就到了，很有诚意。','4.5']]
+          .map(([n,f,c,r])=>`<div><div style="display:flex;gap:7px;align-items:center"><b class="small">${n}</b><span class="tiny">${f}</span><span class="spacer"></span>${stars(parseFloat(r))}</div><div class="tiny muted" style="margin-top:4px">${c}</div></div>`).join('')}
+      </div></div>
+    </div>
+  </div>`;
+}
+
+/* ---------------- 平台运营端 ---------------- */
+function pfDashboard(){
+  return `
+  <div class="page-h"><h1>平台数据看板</h1><p>2026-10-16 · 数据更新于 10:00</p>
+    <div class="actions"><span class="pill">本月</span><span class="pill">本周</span><span class="pill">今日</span><button class="btn ghost">导出</button></div></div>
+
+  <div class="grid g5" style="margin-bottom:16px">
+    <div class="kpi brand"><div class="lab">本月 GMV</div><div class="val">US$3.42<small>M</small></div><div class="sub">较上月 +24.6%</div></div>
+    <div class="kpi"><div class="lab">有效成交订单</div><div class="val">186</div><div class="sub">北极星指标 · +18 单</div></div>
+    <div class="kpi"><div class="lab">新增询盘</div><div class="val">1,428</div><div class="sub">买家发 RFQ 数</div></div>
+    <div class="kpi"><div class="lab">活跃供应商</div><div class="val">3,862</div><div class="sub">30 天内报价过</div></div>
+    <div class="kpi"><div class="lab">纠纷率</div><div class="val">1.8<small>%</small></div><div class="sub">较上月 -0.4pt</div></div>
+  </div>
+
+  <div class="row" style="margin-bottom:16px">
+    <div class="col card"><div class="card-h"><h3>核心转化漏斗（近 30 天）</h3><span class="more">⚠️ 报价→成交 13.2%，低于健康线 15%</span></div>
+    <div class="card-b"><div class="funnel">
+      ${[['发布 RFQ',1428,1428],['成功派单',1326,1428],['收到报价',1088,1428],['进入谈判',412,1428],['成交',186,1428]].map(([n,v,m])=>`
+        <div class="frow"><div class="flab">${n}</div><div class="fbar"><i style="width:${v/m*100}%"></i><span>${v.toLocaleString()}</span></div><div class="fval">${(v/m*100).toFixed(1)}%</div></div>`).join('')}
+    </div></div></div>
+    <div class="col card"><div class="card-h"><h3>类目健康度</h3><span class="more">需关注 1 个</span></div>
+    <div class="card-b none"><table><thead><tr><th>类目</th><th>活跃供给</th><th>24h 报价率</th><th>成交率</th><th>健康度</th></tr></thead><tbody>
+      ${[['保温杯',684,'91%','17.4%','ok'],['包袋',912,'86%','15.1%','ok'],['服饰',1024,'81%','14.2%','ok'],['雨伞',268,'72%','11.8%','warn'],['数码',418,'54%','9.6%','danger']]
+        .map(([c,s,r,cr,h])=>`<tr><td class="bold">${c}</td><td>${s}</td><td class="${r<'60%'?'red bold':''}">${r}</td><td>${cr}</td><td>${h==='ok'?'<span class="tag g">良好</span>':h==='warn'?'<span class="tag w">关注</span>':'<span class="tag r">告急</span>'}</td></tr>`).join('')}
+    </tbody></table></div></div>
+  </div>
+
+  <div class="grid g3">
+    <div class="card"><div class="card-h"><h3>供需匹配</h3></div><div class="card-b">
+      <div class="tiny muted">派单精准度（供应商有效报价率）</div><div class="bar" style="margin:6px 0 12px"><i class="g" style="width:82%"></i></div>
+      <div class="tiny muted">平均收到报价家数</div><div class="bar" style="margin:6px 0 12px"><i style="width:68%"></i></div>
+      <div class="tiny muted">RFQ 24h 内获首报价</div><div class="bar" style="margin:6px 0 12px"><i class="g" style="width:88%"></i></div>
+      <div class="tiny muted">平均派单家数</div><div class="bar" style="margin:6px 0 4px"><i class="o" style="width:56%"></i></div>
+      <div class="bold" style="font-size:12.5px;margin-top:4px">5.6 家</div>
+    </div></div>
+    <div class="card"><div class="card-h"><h3>信任与担保</h3></div><div class="card-b">
+      <div style="display:flex;flex-direction:column;gap:11px;font-size:12.5px">
+        <div style="display:flex"><span class="muted" style="flex:1">担保交易占比</span><b>73.2%</b></div>
+        <div style="display:flex"><span class="muted" style="flex:1">监管账户资金池</span><b>US$4.18M</b></div>
+        <div style="display:flex"><span class="muted" style="flex:1">已认证供应商占比</span><b>64.1%</b></div>
+        <div style="display:flex"><span class="muted" style="flex:1">金牌供应商</span><b>214 家</b></div>
+        <div style="display:flex"><span class="muted" style="flex:1">平均买家评分</span><b>4.6 / 5</b></div>
+        <div style="display:flex"><span class="muted" style="flex:1">按时交付率</span><b class="green">95.8%</b></div>
+        <div style="display:flex"><span class="muted" style="flex:1">退款率</span><b>0.9%</b></div>
+      </div>
+    </div></div>
+    <div class="card"><div class="card-h"><h3>Agent 自动化效率</h3></div><div class="card-b">
+      <div class="kpi brand" style="border:none;margin-bottom:12px"><div class="lab">人工介入率</div><div class="val">21.4<small>%</small></div><div class="sub">目标 &lt; 20%，较上月 -6.2pt</div></div>
+      <div style="display:flex;flex-direction:column;gap:9px;font-size:12.5px">
+        <div style="display:flex"><span class="muted" style="flex:1">询盘解析自动完成</span><b>96.8%</b></div>
+        <div style="display:flex"><span class="muted" style="flex:1">派单自动完成</span><b>100%</b></div>
+        <div style="display:flex"><span class="muted" style="flex:1">报价草稿 Agent 生成占比</span><b>78.2%</b></div>
+        <div style="display:flex"><span class="muted" style="flex:1">入驻审核 Agent 预审通过率</span><b>61.0%</b></div>
+        <div style="display:flex"><span class="muted" style="flex:1">单均人力成本</span><b class="green">US$8.4 ↓</b></div>
+      </div>
+    </div></div>
+  </div>
+  <div class="foot">北极星指标：月度有效成交订单数 · 所有指标均可下钻到类目 / 国家 / 供应商分层</div>`;
+}
+
+function pfReview(){
+  return `
+  <div class="page-h"><h1>入驻审核</h1><p>待审核 3 条 · Agent 已预审并生成风险摘要</p>
+    <div class="actions"><button class="btn ghost">审核规则配置</button><button class="btn pri">批量通过低风险</button></div></div>
+  <div class="card" style="margin-bottom:14px"><div class="card-b">
+    <div class="alert agent"><span class="ic">🤖</span><div><b>Agent 预审完成</b>：3 条申请中 <b>1 条低风险（建议通过）</b>、<b>1 条中风险（需人工核验证书）</b>、<b>1 条高风险（建议驳回）</b>。人工审核平均耗时可从 18 分钟降至 4 分钟。</div></div>
+  </div></div>
+  <div style="display:flex;flex-direction:column;gap:14px">
+    ${REVIEW_QUEUE.map(r=>`
+    <div class="card"><div class="card-b">
+      <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">
+        <div class="lg" style="width:48px;height:48px;border-radius:11px;display:grid;place-items:center;color:#fff;font-size:19px;font-weight:800;background:${r.risk.lvl==='ok'?'linear-gradient(135deg,#12a150,#3ec97c)':r.risk.lvl==='warn'?'linear-gradient(135deg,#c97706,#e8a33d)':'linear-gradient(135deg,#dc2626,#f06060)'}">${r.org[0]}</div>
+        <div style="flex:1;min-width:220px">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <span class="bold" style="font-size:14.5px">${r.org}</span>
+            ${riskTag(r.risk.lvl)}
+            <span class="tag line">${r.type}</span>
+            <span class="pill">${r.region}</span>
+          </div>
+          <div class="tiny muted" style="margin-top:5px">申请号 ${r.id} · ${r.submitted} 提交 · 主营：${r.cat.join(' / ')}</div>
+          <div style="margin-top:9px;display:flex;gap:6px;flex-wrap:wrap">${r.docs.map(d=>`<span class="chip">📎 ${d}</span>`).join('')}</div>
+        </div>
+        <div style="text-align:center;padding:0 12px">
+          <div class="tiny muted">Agent 风险评分</div>
+          <div style="font-size:26px;font-weight:800;color:${r.risk.lvl==='ok'?'var(--ok)':r.risk.lvl==='warn'?'var(--warn)':'var(--danger)'}">${r.risk.score}</div>
+          <div class="tiny muted">${r.risk.lvl==='ok'?'低风险':r.risk.lvl==='warn'?'中风险':'高风险'}</div>
+        </div>
+      </div>
+      <hr>
+      <div class="small muted" style="margin-bottom:8px"><b>Agent 核验明细</b></div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        ${r.risk.items.map(it=>{
+          const ic = it.includes('✗')?'⛔': it.includes('⚠')?'⚠️':'✅';
+          const cl = it.includes('✗')?'danger': it.includes('⚠')?'warn':'ok';
+          return `<div class="alert ${cl}" style="padding:8px 12px"><span class="ic">${ic}</span><div>${it.replace(/[✓✗⚠]/g,'').trim()}</div></div>`;
+        }).join('')}
+      </div>
+      <hr>
+      <div style="display:flex;gap:9px">
+        <button class="btn ok">✅ 通过并认证</button>
+        <button class="btn ghost">要求补充材料</button>
+        <button class="btn danger">驳回申请</button>
+        <span class="spacer"></span>
+        <button class="btn ghost">安排实地验厂（¥2,800）</button>
+      </div>
+    </div></div>`).join('')}
+  </div>`;
+}
+
+function pfRisk(){
+  return `
+  <div class="page-h"><h1>风控预警台</h1><p>今日 5 条待处理 · 其中 2 条高风险</p>
+    <div class="actions"><button class="btn ghost">执法/制裁名单库</button><button class="btn ghost">规则配置</button><button class="btn pri">展开全部</button></div></div>
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="kpi"><div class="lab">今日预警</div><div class="val">5</div><div class="sub">高风险 2 · 中风险 2</div></div>
+    <div class="kpi"><div class="lab">自动拦截</div><div class="val">3</div><div class="sub">制裁名单 / 异常账户</div></div>
+    <div class="kpi"><div class="lab">待人工复核</div><div class="val">2</div><div class="sub">SLA 4 小时</div></div>
+    <div class="kpi"><div class="lab">本月欺诈损失</div><div class="val">US$0</div><div class="sub">前置拦截率 100%</div></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px">
+    ${RISK_ALERTS.map(a=>`
+    <div class="card" style="${a.lvl==='danger'?'border-left:4px solid var(--danger)':a.lvl==='warn'?'border-left:4px solid var(--warn)':'border-left:4px solid var(--brand)'}">
+      <div class="card-b">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <span style="font-size:18px">${alertIc(a.lvl)}</span>
+          <div style="flex:1">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <span class="bold" style="font-size:13.5px">${a.t}</span>
+              ${a.lvl==='danger'?'<span class="tag r">高风险</span>':a.lvl==='warn'?'<span class="tag w">中风险</span>':'<span class="tag b">观察</span>'}
+            </div>
+            <div class="small muted" style="margin-top:5px">${a.d}</div>
+            <div class="tiny muted" style="margin-top:6px">🕐 ${a.time}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;width:126px;flex-shrink:0">
+            <button class="btn ${a.lvl==='danger'?'pri':'ghost'} sm">${a.act}</button>
+            <button class="btn ghost sm">忽略</button>
+          </div>
+        </div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function pfContent(){
+  return `
+  <div class="page-h"><h1>内容治理</h1><p>待处理 12 条 · 本周已下架 38 个违规 SKU</p>
+    <div class="actions"><button class="btn ghost">侵权库管理</button><button class="btn pri">批量处理</button></div></div>
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="kpi"><div class="lab">盗图投诉</div><div class="val">7</div><div class="sub">图片指纹命中</div></div>
+    <div class="kpi"><div class="lab">侵权投诉</div><div class="val">3</div><div class="sub">商标 / 专利 / 外观</div></div>
+    <div class="kpi"><div class="lab">虚假描述</div><div class="val">2</div><div class="sub">Agent 语义比对命中</div></div>
+    <div class="kpi"><div class="lab">本周下架</div><div class="val">38</div><div class="sub">较上周 +12</div></div>
+  </div>
+  <div class="card"><div class="card-b none"><table>
+    <thead><tr><th>类型</th><th>被投诉商品</th><th>涉事供应商</th><th>命中方式</th><th>严重度</th><th>操作</th></tr></thead>
+    <tbody>
+      ${[['盗图','500ml 保温杯（主图）','深圳市某某礼品有限公司','图片指纹相似度 94% 命中义乌某店','高','下架 + 警告'],
+         ['侵权','迪士尼图案帆布袋','东莞某某包袋厂','商标库命中 DISNEY 图形','高','下架 + 扣信用分'],
+         ['虚假描述','304 不锈钢杯（实为 201）','永康某某金属厂','材质描述与检测报告不符','高','下架 + 要求整改'],
+         ['盗图','折叠伞满版印花图','义乌某某伞业','图片指纹相似度 91%','中','要求换图'],
+         ['敏感词','"医疗级杀菌"宣传语','某某健康用品','宣传合规规则命中','中','要求修改文案'],
+         ['盗图','帽衫模特图','绍兴某某服饰','图片指纹相似度 88%','低','提醒']]
+        .map(([t,p,s,m,lv,act])=>`<tr>
+          <td><span class="tag ${t==='侵权'?'r':t==='盗图'?'w':'b'}">${t}</span></td>
+          <td>${p}</td><td class="small">${s}</td><td class="tiny muted">${m}</td>
+          <td><span class="tag ${lv==='高'?'r':lv==='中'?'w':'gray'}">${lv}</span></td>
+          <td><button class="btn ghost sm">${act}</button> <button class="btn ghost sm">申诉</button></td>
+        </tr>`).join('')}
+    </tbody></table></div></div>`;
+}
+
+function pfDispute(){
+  return `
+  <div class="page-h"><h1>纠纷仲裁台</h1><p>进行中 1 件 · 本月已裁决 7 件 · 平均处理时长 4.2 天</p>
+    <div class="actions"><button class="btn ghost">仲裁规则库</button></div></div>
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="kpi"><div class="lab">进行中纠纷</div><div class="val">1</div><div class="sub">资金已冻结</div></div>
+    <div class="kpi"><div class="lab">本月纠纷率</div><div class="val">1.8<small>%</small></div><div class="sub">低于行业均值 3.2%</div></div>
+    <div class="kpi"><div class="lab">平均处理时长</div><div class="val">4.2<small>天</small></div><div class="sub">SLA 7 天</div></div>
+    <div class="kpi"><div class="lab">冻结资金总额</div><div class="val">US$18.8<small>K</small></div><div class="sub">2 笔待裁决</div></div>
+  </div>
+  ${DISPUTES.map(d=>`
+  <div class="card" style="margin-bottom:15px"><div class="card-b">
+    <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex:1;min-width:240px">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <span class="mono tiny muted">${d.id}</span>
+          <span class="tag ${d.status==='arbitrating'?'w':'g'}">${d.status==='arbitrating'?'仲裁中':'已裁决'}</span>
+          <span class="tag line">订单 ${d.order}</span>
+        </div>
+        <div class="bold" style="font-size:14px;margin:8px 0 4px">${d.reason}</div>
+        <div class="small muted">买家：${d.buyer} · 供应商：${d.sup} · 争议金额：<b class="price">${d.amount}</b></div>
+        <div class="tiny muted" style="margin-top:5px">资金状态：${d.escrow}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;width:150px;flex-shrink:0">
+        <button class="btn pri sm">进入仲裁</button>
+        <button class="btn ghost sm">查看证据链</button>
+        <button class="btn ghost sm">联系双方</button>
+      </div>
+    </div>
+    <hr>
+    <div class="alert agent"><span class="ic">🤖</span><div><b>仲裁辅助 Agent 生成</b><br>${d.digest}<br><br><b>建议裁定：</b>${d.agent}</div></div>
+    <hr>
+    <div style="display:flex;gap:9px">
+      <button class="btn ok">采纳 Agent 建议并裁定</button>
+      <button class="btn ghost">修改裁定金额</button>
+      <button class="btn ghost">转人工合议</button>
+      <span class="spacer"></span>
+      <button class="btn danger">驳回申请</button>
+    </div>
+  </div></div>`).join('')}`;
+}
+
+function pfFinance(){
+  return `
+  <div class="page-h"><h1>交易与结算</h1><p>2026-10 · 佣金收入 US$68.4K · 会员收入 US$142K</p>
+    <div class="actions"><button class="btn ghost">对账单导出</button><button class="btn pri">发起结算</button></div></div>
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="kpi brand"><div class="lab">本月平台收入</div><div class="val">US$224<small>K</small></div><div class="sub">会员 142K · 佣金 68K · 服务 14K</div></div>
+    <div class="kpi"><div class="lab">监管账户资金池</div><div class="val">US$4.18<small>M</small></div><div class="sub">担保交易在途资金</div></div>
+    <div class="kpi"><div class="lab">待结算佣金</div><div class="val">US$21.6<small>K</small></div><div class="sub">186 笔订单</div></div>
+    <div class="kpi"><div class="lab">会员续费率</div><div class="val">83<small>%</small></div><div class="sub">到期 62 家，续费 51 家</div></div>
+  </div>
+  <div class="row">
+    <div class="col card"><div class="card-h"><h3>收入结构</h3><span class="more">本月</span></div><div class="card-b">
+      ${[['会员费（金品诚企）',142000,'63%'],['成交佣金（1%–3%）',68400,'31%'],['增值服务费',14000,'6%']]
+        .map(([n,v,p])=>`<div style="margin-bottom:13px">
+          <div style="display:flex;font-size:12.5px;margin-bottom:5px"><span>${n}</span><span class="spacer"></span><b>US$ ${(v/1000).toFixed(1)}K</b></div>
+          <div class="bar" style="height:9px"><i style="width:${p}"></i></div></div>`).join('')}
+      <hr>
+      <div class="alert info"><span class="ic">💡</span><div>会员费占比偏高（63%），建议提升成交佣金与增值服务收入占比，降低对会员费的依赖。</div></div>
+    </div></div>
+    <div class="col card"><div class="card-h"><h3>担保资金流转</h3></div><div class="card-b none"><table>
+      <thead><tr><th>订单</th><th>金额</th><th>状态</th><th>操作</th></tr></thead><tbody>
+      ${[['HM-PO-20261018-0042','US$12,150','待收尾款','—'],
+         ['HM-PO-20261015-0038','US$7,040','已冻结（纠纷中）','冻结'],
+         ['HM-PO-20261012-0031','US$23,800','已放款','放款'],
+         ['HM-PO-20261010-0027','US$5,600','待买家确认','—'],
+         ['HM-PO-20261008-0019','US$18,200','已放款','放款']]
+        .map(([o,a,s,ac])=>`<tr><td class="mono tiny">${o}</td><td class="bold">${a}</td>
+          <td><span class="tag ${s.includes('冻结')?'r':s.includes('放款')?'g':'w'}">${s}</span></td>
+          <td>${ac==='—'?'<span class="tiny muted">—</span>':`<button class="btn ghost sm">${ac}</button>`}</td></tr>`).join('')}
+    </tbody></table></div></div>
+  </div>`;
+}
+
+function pfCategory(){
+  return `
+  <div class="page-h"><h1>类目与活动</h1><p>9 个一级类目 · 3 个活动进行中</p>
+    <div class="actions"><button class="btn ghost">推荐位配置</button><button class="btn pri">＋ 新建活动</button></div></div>
+  <div class="card" style="margin-bottom:16px"><div class="card-b">
+    <div class="alert danger"><span class="ic">⛔</span><div><b>类目告急：数码</b> —— 24h 报价率仅 <b>54%</b>（警戒线 60%），主要因「充电宝」品类受 UN38.3 认证与空运限制，可报价供应商不足。<b>建议：定向邀请 20 家具备 UN38.3 的供应商入驻。</b></div></div>
+  </div></div>
+  <div class="grid g3" style="margin-bottom:16px">
+    ${[['🎄','圣诞礼品专场','2026-11-01 → 12-25','进行中','g','首页 Banner + 类目置顶'],
+       ['🎁','年底企业礼品季','2026-11-15 → 12-31','筹备中','w','邮件推送 + 站内信'],
+       ['🌏','新买家首单免佣','长期','进行中','g','全站生效']]
+      .map(([e,n,d,st,t,pos])=>`<div class="card"><div class="card-b">
+        <div style="display:flex;gap:10px;align-items:center"><span style="font-size:24px">${e}</span><div style="flex:1"><div class="bold">${n}</div><div class="tiny muted">${d}</div></div><span class="tag ${t}">${st}</span></div>
+        <hr><div class="tiny muted">投放位置：${pos}</div>
+        <div style="display:flex;gap:7px;margin-top:11px"><button class="btn ghost sm" style="flex:1">编辑</button><button class="btn ghost sm" style="flex:1">数据</button></div>
+      </div></div>`).join('')}
+  </div>
+  <div class="card"><div class="card-h"><h3>一级类目管理</h3><span class="more">点击可下钻到二级类目</span></div>
+  <div class="card-b none"><table>
+    <thead><tr><th>类目</th><th>SKU 数</th><th>活跃供应商</th><th>月 GMV</th><th>24h 报价率</th><th>状态</th><th>操作</th></tr></thead>
+    <tbody>
+      ${[['保温杯',1284,684,'US$842K','91%','正常'],
+         ['包袋',2910,912,'US$1.02M','86%','正常'],
+         ['服饰',3220,1024,'US$764K','81%','正常'],
+         ['餐厨',864,412,'US$318K','78%','正常'],
+         ['雨伞',620,268,'US$142K','72%','关注'],
+         ['数码',1506,418,'US$336K','54%','告急']]
+        .map(([c,s,sup,gmv,r,st])=>`<tr><td class="bold">${c}</td><td>${s}</td><td>${sup}</td><td>${gmv}</td>
+          <td class="${r<'60%'?'red bold':''}">${r}</td>
+          <td>${st==='正常'?'<span class="tag g">正常</span>':st==='关注'?'<span class="tag w">关注</span>':'<span class="tag r">告急</span>'}</td>
+          <td><button class="btn ghost sm">配置</button></td></tr>`).join('')}
+    </tbody></table></div></div>`;
+}
+
+/* ---------------- 通用页 ---------------- */
+function commonKb(){
+  return `
+  <div class="page-h"><h1>知识库与内容中台</h1><p>现有 RAG 能力升格为平台内容中台，三端共用同一套口径</p></div>
+  <div class="card" style="margin-bottom:16px"><div class="card-b">
+    <div class="alert info"><span class="ic">🧠</span><div><b>改造说明</b>：现有「FAQ + Milvus hybrid + 父子分块 + BM25 兜底」能力保留，服务对象从"我方业务员"扩展为<b>三端 + 平台客服机器人</b>。商品描述、FAQ、合规口径、话术库统一由内容中台供给，避免"每个人说法不一样"。</div></div>
+  </div></div>
+  <div class="grid g4">
+    ${[['📚','知识条目','4,860','覆盖 9 个类目'],['❓','FAQ 对','1,240','命中率 91%'],['🌐','多语言语料','3 种','中 / 英 / 日'],
+       ['🔄','最近重建','2 小时前','Milvus gift_knowledge']]
+      .map(([e,a,b,c])=>`<div class="card"><div class="card-b"><div style="font-size:22px">${e}</div>
+        <div class="muted small" style="margin-top:6px">${a}</div><div class="bold" style="font-size:20px">${b}</div><div class="tiny muted">${c}</div></div></div>`).join('')}
+  </div>
+  <div class="card" style="margin-top:16px"><div class="card-h"><h3>三端可检索的知识域</h3></div><div class="card-b">
+    <div class="grid g3">
+      ${[['采购商侧','中国供应链常识、Incoterms 解释、认证含义（FDA/CE/BSCI）、交期预期、目的国准入'],
+         ['供应商侧','英文商务写作、报价要点、认证申请流程、海外买家习惯、包装与标签要求'],
+         ['平台侧','审核规则、风控口径、仲裁先例、类目政策、平台条款与合规话术']]
+        .map(([n,d])=>`<div style="padding:13px;background:var(--panel-2);border-radius:9px;border:1px solid var(--line-2)">
+          <div class="bold" style="margin-bottom:5px">${n}</div><div class="tiny muted">${d}</div></div>`).join('')}
+    </div>
+  </div></div>`;
+}
+
+function commonApproval(){
+  return `
+  <div class="page-h"><h1>审批闸门</h1><p>现有「防 AI 乱承诺」的外发闸门，升级为三端通用的外发合规闸门</p></div>
+  <div class="card" style="margin-bottom:16px"><div class="card-b">
+    <div class="alert info"><span class="ic">🚦</span><div><b>改造说明</b>：原来只有"我方业务员 → 老板"一层审批。平台模式下扩展为三类闸门：<br>
+      ① <b>供应商侧</b>：业务员报价/承诺 → 企业主审批外发<br>
+      ② <b>采购商侧</b>：对外发布 RFQ / 对供应商的正式承诺 → 合规校验（违禁品、制裁、敏感词）<br>
+      ③ <b>平台侧</b>：大额放款 / 仲裁裁定 → 双人复核</div></div>
+  </div></div>
+  <div class="grid g3" style="margin-bottom:16px">
+    <div class="kpi"><div class="lab">待审批</div><div class="val">3</div><div class="sub">2 小时内 1 条超时</div></div>
+    <div class="kpi"><div class="lab">本月驳回</div><div class="val">12</div><div class="sub">多为价格承诺越权</div></div>
+    <div class="kpi"><div class="lab">平均审批时长</div><div class="val">42<small>分</small></div><div class="sub">目标 &lt; 60 分</div></div>
+  </div>
+  <div class="card"><div class="card-b none"><table>
+    <thead><tr><th>类型</th><th>提交人</th><th>内容摘要</th><th>风险提示</th><th>提交时间</th><th>操作</th></tr></thead>
+    <tbody>
+      ${[['供应商报价外发','吴经理（义乌星海）','3000 pcs 保温杯 US$4.05/pc FOB 宁波，含激光 LOGO','价格低于类目均价 4%，属合理区间','18 分钟前'],
+         ['供应商报价外发','周经理（深圳能量）','800 pcs 充电宝 US$9.20/pc FOB 深圳','⚠️ 承诺 12 天交期，与产能记录不符（历史上需 20 天）','1 小时前'],
+         ['买家 RFQ 发布','Omar（科威特）','5,000 pcs 折叠伞，目的国阿联酋','⚠️ 账号未完成企业认证，建议限制派单范围','2 小时前'],
+         ['平台大额放款','系统自动','HM-PO-20261012-0031 放款 US$23,800','金额超 US$20K，需双人复核','3 小时前']]
+        .map(([t,w,c,risk,time])=>`<tr>
+          <td><span class="tag b">${t}</span></td>
+          <td class="small">${w}</td>
+          <td class="small" style="max-width:280px">${c}</td>
+          <td class="tiny" style="max-width:230px;color:${risk.includes('⚠️')?'var(--warn)':'var(--muted)'}">${risk}</td>
+          <td class="tiny muted nowrap">${time}</td>
+          <td class="nowrap"><button class="btn ok sm">通过</button> <button class="btn danger sm">驳回</button></td>
+        </tr>`).join('')}
+    </tbody></table></div></div>
+  <div class="foot">闸门原则：任何由 AI 生成的对外内容与承诺，都必须经过人工确认才能外发</div>`;
+}
+
+/* ---------------- Agent 悬浮助手 ---------------- */
+function agentPanelHtml(){
+  return `
+  <div class="agent-panel ${S.agentOpen?'on':''}" id="agentPanel">
+    <div class="ah">
+      <div style="width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#0b5cff,#6a3cff);color:#fff;display:grid;place-items:center;font-size:14px">🤖</div>
+      <div style="flex:1"><div class="bold" style="font-size:13px">海贸智能中枢</div><div class="tiny muted">当前身份：${ROLES[S.role].name} · 数据边界已隔离</div></div>
+      <button class="btn ghost sm" onclick="toggleAgent()">✕</button>
+    </div>
+    <div class="ab" id="agentBody">
+      ${S.agentMsgs.map(m=>`<div class="msg ${m.r}">${m.t}</div>`).join('')}
+    </div>
+    <div class="af">
+      <div style="display:flex;gap:6px;margin-bottom:7px;flex-wrap:wrap">
+        ${quickAsks().map(q=>`<span class="chip" style="font-size:11px;padding:3px 9px" onclick="askAgent('${q.replace(/'/g,'')}')">${q}</span>`).join('')}
+      </div>
+      <div style="display:flex;gap:7px"><input placeholder="问点什么，如：这 3 家报价谁最合适？" onkeydown="if(event.key==='Enter')askAgent(this.value)"><button class="btn pri sm" onclick="askAgent(this.previousElementSibling.value)">发送</button></div>
+    </div>
+  </div>`;
+}
+function quickAsks(){
+  if(S.role==='buyer') return ['这 3 家报价谁最合适？','帮我看看交期能不能赶上','这家供应商靠谱吗'];
+  if(S.role==='supplier') return ['帮我写英文报价','这个价我该不该接','我的信用分怎么提'];
+  return ['今天有什么异常？','哪类目供给不足','这批入驻风险大吗'];
+}
+function askAgent(q){
+  if(!q||!q.trim()) return;
+  S.agentMsgs.push({r:'u',t:q});
+  const ans = {
+    buyer:'已为你分析 RFQ-20261016-0117 的 3 家报价：<b>宁波盛达（US$4.05 / 18天 / 已验厂 / 信用分4.7）综合最优</b>。永康恒久单价最低但交期 28 天，赶不上你的 11-20 大货窗口。<br><br>需要我生成一份<b>正式比价报告 PDF</b> 发给你的团队吗？',
+    supplier:'已根据你的价目表与买家需求生成报价草稿：<b>US$4.05/pc FOB 宁波，MOQ 500，交期 18 天</b>，并附上 FDA / BSCI / ISO9001 资质。<br><br>提示：这个买家历史付款及时性 98%，属优质客户，建议 3 小时内回复（你有 88% 的 24h 响应率，保持住可以冲击金牌供应商）。',
+    platform:'今日 5 条预警中 2 条高风险：<br>① 永康恒久报价低于类目均价 36%，疑似钓鱼报价；<br>② 一份 SGS 证书同时挂在 3 家供应商名下。<br><br>另外「数码」类目 24h 报价率降至 54%，已跌破 60% 警戒线，建议定向邀请 20 家具备 UN38.3 的供应商入驻。'
+  }[S.role];
+  S.agentMsgs.push({r:'a',t:ans});
+  S.agentOpen=true; renderAgent();
+  setTimeout(()=>{const b=$('#agentBody'); if(b) b.scrollTop=b.scrollHeight;},30);
+}
+function renderAgent(){
+  const el=$('#agentPanel');
+  if(el){ el.outerHTML=agentPanelHtml(); }
+  else document.body.insertAdjacentHTML('beforeend',agentPanelHtml());
+  const b=$('#agentBody'); if(b) b.scrollTop=b.scrollHeight;
+}
+
+/* ---------------- 渲染 ---------------- */
+const PAGES={
+  'buyer-home':buyerHome,'buyer-search':buyerSearch,'buyer-product':buyerProduct,'buyer-rfq-new':buyerRfqNew,
+  'buyer-rfq-list':buyerRfqList,'buyer-quote-compare':buyerQuoteCompare,'buyer-order':buyerOrder,'buyer-suppliers':buyerSuppliers,
+  'sup-dashboard':supDashboard,'sup-pool':supPool,'sup-quote':supQuote,'sup-quote-list':supQuoteList,
+  'sup-products':supProducts,'sup-orders':supOrders,'sup-cert':supCert,'sup-shop':supShop,
+  'pf-dashboard':pfDashboard,'pf-review':pfReview,'pf-risk':pfRisk,'pf-content':pfContent,
+  'pf-dispute':pfDispute,'pf-finance':pfFinance,'pf-category':pfCategory,
+  'common-kb':commonKb,'common-approval':commonApproval
+};
+function render(){
+  const fn=PAGES[S.page]||buyerHome;
+  $('#app').innerHTML = topbar() + `<div class="main">${fn()}</div>` + `
+    <button class="agent-fab" onclick="toggleAgent()" title="海贸智能中枢">🤖</button>`;
+  renderAgent();
+}
+render();
+</script>
+</body>
+</html>
