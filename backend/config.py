@@ -56,8 +56,9 @@ class Settings(BaseSettings):
     vision_model: str = "deepseek-flash"
     mock_llm: bool = False
 
-    bge_m3_model_path: str = r"F:\eduagent\总代码\backend\models\embedding\bge-m3"
-    use_local_bge: bool = True
+    # 留空时回退到 HuggingFace 在线模型；填写本地路径可离线加载
+    bge_m3_model_path: str = ""
+    use_local_bge: bool = False
 
     app_env: str = "local"
     log_level: str = "INFO"
@@ -66,6 +67,12 @@ class Settings(BaseSettings):
     default_tenant_id: str = "tenant_demo"
     api_host: str = "0.0.0.0"
     api_port: int = 8000
+
+    # 允许跨域访问前端的来源，逗号分隔。默认仅放行本机开发端口。
+    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
+
+    # 新增员工账号时的初始密码。管理员应在首次登录后要求本人修改。
+    default_user_password: str = "123456"
 
     knowledge_dir: str = os.path.join(_PROJECT_ROOT, "data", "knowledge")
     seed_dir: str = os.path.join(_PROJECT_ROOT, "data", "seed")
@@ -77,7 +84,7 @@ class Settings(BaseSettings):
     milvus_collection: str = "gift_knowledge"
     use_milvus: bool = True
 
-    # Redis 对话缓存（可复用 milvus-redis，默认密码 1234）
+    # Redis 对话缓存（凭据必须通过环境变量或 .env.local 提供）
     redis_host: str = "127.0.0.1"
     redis_port: int = 6379
     redis_password: str = ""
@@ -85,11 +92,11 @@ class Settings(BaseSettings):
     redis_ttl_seconds: int = 86400
     redis_key_prefix: str = "gift_chat"
 
-    # MySQL FAQ（默认 Docker gift-mysql:3307）
+    # MySQL FAQ（凭据必须通过环境变量或 .env.local 提供）
     mysql_host: str = "127.0.0.1"
     mysql_port: int = 3307
     mysql_user: str = "gift"
-    mysql_password: str = "<REDACTED>"
+    mysql_password: str = ""
     mysql_database: str = "gift_desk"
     faq_bm25_confidence: float = 0.78
     faq_bm25_min_score: float = 5.0
@@ -123,6 +130,11 @@ class Settings(BaseSettings):
         if self.mock_llm:
             return False
         return bool(self.resolved_api_key)
+
+    @property
+    def resolved_cors_origins(self) -> list[str]:
+        origins = [o.strip() for o in (self.cors_origins or "").split(",") if o.strip()]
+        return origins or ["http://localhost:5173"]
 
 
 @lru_cache()

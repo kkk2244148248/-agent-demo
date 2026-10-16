@@ -30,10 +30,10 @@ settings = get_settings()
 app = FastAPI(title=settings.app_name, version="0.3.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.resolved_cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 _kb_status = {
@@ -434,6 +434,8 @@ def health() -> dict[str, Any]:
             "redis": f"{settings.redis_host}:{settings.redis_port}/{settings.redis_db}",
             "mysql": f"{settings.mysql_host}:{settings.mysql_port}/{settings.mysql_database}",
         },
+        # 供账号管理页回填「初始密码」输入框，避免前端硬编码
+        "default_user_password": settings.default_user_password,
     }
 
 

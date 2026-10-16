@@ -89,14 +89,24 @@ import { api } from '../api'
 const items = ref([])
 const error = ref('')
 const saving = ref(false)
+const initialPassword = ref('')
 const form = reactive({
   name: '',
   username: '',
-  password: '123456',
+  password: '',
   role: '外贸业务员',
   is_admin: false,
   can_approve: false,
 })
+
+function resetForm() {
+  form.name = ''
+  form.username = ''
+  form.password = initialPassword.value
+  form.role = '外贸业务员'
+  form.is_admin = false
+  form.can_approve = false
+}
 
 async function load() {
   error.value = ''
@@ -112,12 +122,7 @@ async function create() {
   error.value = ''
   try {
     await api.createUser({ ...form })
-    form.name = ''
-    form.username = ''
-    form.password = '123456'
-    form.role = '外贸业务员'
-    form.is_admin = false
-    form.can_approve = false
+    resetForm()
     await load()
     alert('账号已添加，请把账号密码告诉本人')
   } catch (e) {
@@ -149,5 +154,15 @@ async function resetPwd(u) {
   }
 }
 
-onMounted(load)
+onMounted(async () => {
+  await load()
+  // 初始密码由后端配置下发，避免前端硬编码
+  try {
+    const health = await api.health()
+    initialPassword.value = health?.default_user_password || ''
+    if (!form.password) form.password = initialPassword.value
+  } catch (_) {
+    /* 拿不到时留空，由管理员自行填写 */
+  }
+})
 </script>
