@@ -55,6 +55,22 @@
 
         <div v-for="(m, idx) in messages" :key="idx" class="msg" :class="m.role">
           <div class="msg-bubble">
+            <!-- 调度过程：单独折叠展示，不混进正文 -->
+            <div v-if="m.process?.length" class="process-box" :class="{ collapsed: !m.processOpen }">
+              <button type="button" class="process-head" @click="toggleProcess(m)">
+                <span class="process-dot" aria-hidden="true"></span>
+                <span class="process-title">{{ processSummary(m) }}</span>
+                <span class="process-toggle">{{ m.processOpen ? '收起过程' : '查看过程' }}</span>
+              </button>
+              <ol v-show="m.processOpen" class="process-steps">
+                <li v-for="(s, si) in m.process" :key="si" class="process-step">
+                  <div class="process-step-title">{{ s.title }}</div>
+                  <div v-if="s.detail" class="process-step-detail">{{ s.detail }}</div>
+                  <div v-for="(it, ii) in (s.items || [])" :key="ii" class="process-step-item">{{ it }}</div>
+                </li>
+              </ol>
+            </div>
+
             <div class="msg-text">{{ m.text }}</div>
 
             <div v-if="m.vendors?.length" class="vendor-cards">
@@ -115,15 +131,6 @@
                 :key="'cr' + ai"
                 class="created-tag"
               >已创建 {{ a.entity }} {{ a.id }}</span>
-            </div>
-            <div v-if="m.supervisor" class="trace-box">
-              <div>总控：Skill <b>{{ m.supervisor.skill_title || m.supervisor.skill }}</b>
-                → {{ m.supervisor.agent_title || m.supervisor.agent }}</div>
-              <div class="muted">{{ m.supervisor.reason }}</div>
-              <div v-if="m.agentPlan">
-                子 Agent 工具：{{ (m.agentPlan.tools || []).join(' → ') || '知识库' }}
-                <span class="muted"> · {{ m.agentPlan.reason }}</span>
-              </div>
             </div>
           </div>
         </div>
@@ -208,6 +215,17 @@ function useActionChat(message) {
   draft.value = message
 }
 
+function toggleProcess(m) {
+  m.processOpen = !m.processOpen
+}
+
+function processSummary(m) {
+  const skill = m.supervisor?.skill_title || m.supervisor?.skill || 'Skill'
+  const agent = m.supervisor?.agent_title || m.supervisor?.agent || '子 Agent'
+  const tools = m.tools?.length ? m.tools.join(' → ') : '知识库'
+  return `${skill} → ${agent} → ${tools}`
+}
+
 function askAboutVendor(v) {
   draft.value = `给 ${v.vendor_id || ''} ${v.vendor_name || ''} 写一段询厂微信`
 }
@@ -264,15 +282,23 @@ async function send() {
       extra.force_vision = forceVision.value
     }
     const res = await api.assistantChat(content, extra)
+    const process = Array.isArray(res.process) ? res.process : []
     messages.value.push({
       role: 'assistant',
       text: res.answer || '（无回答）',
+      process,
+      // 默认展开最新一条的调度过程，方便确认"它到底干了什么"；历史消息折叠
+      processOpen: process.length > 0,
       supervisor: res.supervisor,
       agentPlan: res.agent_plan,
       tools: res.invoked_tools || [],
       vendors: res.vendors || res.pipeline?.vendors || [],
       actions: res.actions || res.nav_links || [],
     })
+    // 历史消息收起，避免长对话里过程面板堆积喧宾夺主
+    for (let i = 0; i < messages.value.length - 1; i++) {
+      if (messages.value[i].process?.length) messages.value[i].processOpen = false
+    }
   } catch (e) {
     error.value = e.message || String(e)
     messages.value.push({
@@ -419,12 +445,88 @@ async function send() {
   font-size: 15px;
   line-height: 1.55;
 }
-.trace-box {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px dashed var(--line, #d3ddd7);
+/* ── 调度过程面板（与正文分离） ───────────────── */
+.process-box {
+  margin: 0 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--line, #d3ddd7);
+}
+.process-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #cfe0da;
+  border-radius: 10px;
+  background: #f3f8f6;
+  font: inherit;
+  font-size: 12.5px;
+  color: #2c4a42;
+  cursor: pointer;
+  text-align: left;
+}
+.process-head:hover { background: #eaf4f0; }
+.process-dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--brand, #0d5c4f);
+}
+.process-box.collapsed .process-dot { background: #9db3ac; }
+.process-title {
+  flex: 1;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.process-toggle {
+  flex: none;
+  color: var(--brand, #0d5c4f);
+  font-weight: 600;
+}
+.process-steps {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0 0 0 4px;
+}
+.process-step {
+  position: relative;
+  padding: 0 0 12px 18px;
+  border-left: 2px solid #dbe8e4;
   font-size: 13px;
   line-height: 1.5;
+}
+.process-step:last-child {
+  border-left-color: transparent;
+  padding-bottom: 0;
+}
+.process-step::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand, #0d5c4f);
+}
+.process-step-title { font-weight: 600; color: #1f3b34; }
+.process-step-detail {
+  margin-top: 3px;
+  color: var(--muted, #5d6b73);
+  font-size: 12.5px;
+}
+.process-step-item {
+  margin-top: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #f6faf8;
+  color: #33514a;
+  font-size: 12.5px;
 }
 .action-row {
   display: flex;

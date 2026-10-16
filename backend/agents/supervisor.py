@@ -497,6 +497,46 @@ def _collect_actions(run_result: dict[str, Any] | None, supervisor: dict[str, An
     return uniq
 
 
+def _format_process(
+    supervisor: dict[str, Any],
+    agent_plan: dict[str, Any],
+    run_result: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    """把「调度过程」抽成结构化步骤，供前端单独折叠展示。
+
+    每步形如 {step, title, detail, items}，前端只负责渲染，不再从正文里正则剥离。
+    """
+    steps: list[dict[str, Any]] = [
+        {
+            "step": "supervisor",
+            "title": f"总控识别意图 → Skill「{supervisor.get('skill_title') or supervisor.get('skill') or '-'}」",
+            "detail": supervisor.get("reason") or "",
+            "items": [
+                f"交给子 Agent：{supervisor.get('agent_title') or supervisor.get('agent') or '-'}"
+            ],
+        },
+        {
+            "step": "agent",
+            "title": f"「{agent_plan.get('agent_title') or agent_plan.get('agent') or '子 Agent'}」选择工具",
+            "detail": agent_plan.get("reason") or "",
+            "items": [f"选用工具：{' → '.join(agent_plan.get('tools') or []) or '（知识库检索）'}"],
+        },
+    ]
+    result = run_result or {}
+    traces = result.get("agent_trace") or []
+    tools = result.get("invoked_tools") or []
+    if traces or tools:
+        steps.append(
+            {
+                "step": "tools",
+                "title": f"执行工具（{len(tools)} 个）",
+                "detail": "",
+                "items": [str(t) for t in traces],
+            }
+        )
+    return steps
+
+
 def _format_answer(
     user_message: str,
     supervisor: dict[str, Any],
@@ -504,21 +544,13 @@ def _format_answer(
     run_result: dict[str, Any] | None,
     kb_answer: str | None = None,
 ) -> str:
-    lines = [
-        f"【总控】识别 Skill：{supervisor.get('skill_title')} → 交给「{supervisor.get('agent_title')}」",
-        f"原因：{supervisor.get('reason')}",
-        f"【{agent_plan.get('agent_title')}】选用工具：{' → '.join(agent_plan.get('tools') or []) or '（知识库）'}",
-        f"原因：{agent_plan.get('reason')}",
-        "",
-    ]
+    # 正文只保留「具体内容」，调度过程由 _format_process 单独返回给前端折叠展示。
+    lines: list[str] = []
     if kb_answer:
         lines.append(kb_answer)
         return "\n".join(lines).strip()
 
     result = run_result or {}
-    for t in result.get("agent_trace") or []:
-        lines.append(f"· {t}")
-
     pipe = result.get("pipeline") or {}
     outputs = result.get("outputs") or {}
 
@@ -864,8 +896,10 @@ def _sup_format(state: SupervisorState) -> dict[str, Any]:
 
     if kb_answer:
         answer = _format_answer(msg, supervisor, agent_plan, None, kb_answer=kb_answer)
+        process = _format_process(supervisor, agent_plan, None)
         result = {
             "answer": answer,
+            "process": process,
             "source": "supervisor",
             "kb_source": state.get("kb_source") or "rag",
             "supervisor": supervisor,
@@ -886,6 +920,7 @@ def _sup_format(state: SupervisorState) -> dict[str, Any]:
         return {"answer": answer, "actions": [], "result": result}
 
     answer = _format_answer(msg, supervisor, agent_plan, run_result)
+    process = _format_process(supervisor, agent_plan, run_result)
     actions = _collect_actions(run_result or {}, supervisor)
     vendors = _extract_vendor_cards(run_result)
     pipe = dict((run_result or {}).get("pipeline") or {})
@@ -893,6 +928,7 @@ def _sup_format(state: SupervisorState) -> dict[str, Any]:
         pipe["vendors"] = vendors
     result = {
         "answer": answer,
+        "process": process,
         "source": "supervisor",
         "supervisor": supervisor,
         "agent_plan": agent_plan,

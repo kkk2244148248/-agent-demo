@@ -161,6 +161,7 @@ class ChatAssistant:
         answer = self._format_skill_answer(route, result, vendors=vendors)
         return {
             "answer": answer,
+            "process": self._skill_process(route, result),
             "source": "skill",
             "cached": False,
             "skill": route.get("skill"),
@@ -180,25 +181,37 @@ class ChatAssistant:
             },
         }
 
+    @staticmethod
+    def _skill_process(route: dict[str, Any], result: dict[str, Any]) -> list[dict[str, Any]]:
+        """把 Skill 调度过程结构化，与正文分离。"""
+        title = route.get("skill_title") or route.get("skill") or "Skill"
+        tools = list(result.get("invoked_tools") or route.get("tools") or [])
+        steps: list[dict[str, Any]] = [
+            {
+                "step": "skill",
+                "title": f"识别 Skill「{title}」",
+                "detail": route.get("reason") or "",
+                "items": [],
+            },
+            {
+                "step": "tools",
+                "title": f"调用工具（{len(tools)} 个）",
+                "detail": "",
+                "items": [f"选用工具：{' → '.join(tools) or '无'}"]
+                + [str(t) for t in (result.get("agent_trace") or [])],
+            },
+        ]
+        return steps
+
     def _format_skill_answer(
         self,
         route: dict[str, Any],
         result: dict[str, Any],
         vendors: list[dict[str, Any]] | None = None,
     ) -> str:
-        title = route.get("skill_title") or route.get("skill") or "Skill"
-        reason = route.get("reason") or ""
-        tools = " → ".join(result.get("invoked_tools") or route.get("tools") or []) or "无"
-        lines = [
-            f"已识别 Skill：**{title}**",
-            f"原因：{reason}" if reason else "",
-            f"调用工具：{tools}",
-            "",
-        ]
-        traces = result.get("agent_trace") or []
-        if traces:
-            lines.append("执行轨迹：")
-            lines.extend(f"- {t}" for t in traces)
+        # 正文只保留业务内容；调度过程（Skill/工具/轨迹）由 _skill_process 单独结构化返回，
+        # 供前端单列折叠展示，避免"过程"淹没"内容"。
+        lines: list[str] = []
 
         pipe = result.get("pipeline") or {}
         cards = vendors or pipe.get("vendors") or (pipe.get("vendor_match") or {}).get("matched_vendors") or []
