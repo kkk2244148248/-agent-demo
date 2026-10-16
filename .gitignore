@@ -1,0 +1,38 @@
+# ---------- 环境与密钥 ----------
+.env.local
+.env.*.local
+.env
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# ---------- 运行时数据（含明文用户数据，不入库） ----------
+storage/
+logs/
+*.log
+*.bak-*
+
+# ---------- 前端 ----------
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
+
+# ---------- 截图临时产物 ----------
+.shots/
+
+# ---------- IDE / 系统 ----------
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
