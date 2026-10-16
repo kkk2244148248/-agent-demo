@@ -27,3 +27,7 @@ PyYAML>=6.0.0
 pdfplumber>=0.11.0
 pymupdf>=1.24.0
 Pillow>=10.0.0
+
+# 开发与测试依赖见 requirements-dev.txt
+# 说明：业务规则（毛利测算、底价红线、公海回收、账期分级）均有测试覆盖，
+#      改动这些规则后请先跑 `python -m pytest`（152 个用例，约 36 秒）。

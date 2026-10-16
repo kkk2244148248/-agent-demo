@@ -10,7 +10,7 @@ from backend.services.repositories.normalizers import (
     normalize_quotation,
     quote_total,
 )
-from backend.services.repositories.utils import now_str
+from backend.services.repositories.utils import now_str, to_float
 
 _LINE_FIELDS = (
     "product",
@@ -83,11 +83,10 @@ class QuotationRepo:
                 acc = 0.0
                 has_calc = False
                 for x in norm_lines:
-                    try:
-                        q_ = float(x["qty"] or 0)
-                        p_ = float(x["unit_price"] or 0)
-                    except Exception:
-                        continue
+                    # 用宽松解析：业务员从邮件/Excel 粘贴过来的价格常带
+                    # "1,000" 或 "$6.5"，直接 float() 会静默失败并把总额算成空。
+                    q_ = to_float(x.get("qty"), 0.0)
+                    p_ = to_float(x.get("unit_price"), 0.0)
                     if q_ and p_:
                         acc += q_ * p_
                         has_calc = True
