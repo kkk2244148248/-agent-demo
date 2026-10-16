@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>海贸工作台 · 详细流程图</title>
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "neutral",
+      flowchart: { curve: "basis", htmlLabels: true, nodeSpacing: 28, rankSpacing: 40 },
+      securityLevel: "loose",
+    });
+  </script>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --card: #fff;
+      --ink: #1a1917;
+      --muted: #5a564c;
+      --line: #d9d2c4;
+      --accent: #0b5f4f;
+      --code: #f0ebe1;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+    }
+    header {
+      padding: 24px 28px 10px;
+      background: var(--card);
+      border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; z-index: 20;
+    }
+    header h1 { margin: 0 0 4px; font-size: 22px; color: var(--accent); }
+    header p { margin: 0; color: var(--muted); font-size: 13px; }
+    nav {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      padding: 10px 28px;
+      background: var(--card);
+      border-bottom: 1px solid var(--line);
+      position: sticky; top: 72px; z-index: 19;
+    }
+    nav a {
+      text-decoration: none; color: var(--ink);
+      background: var(--bg); border: 1px solid var(--line);
+      padding: 5px 10px; border-radius: 999px; font-size: 12px;
+    }
+    nav a:hover { color: var(--accent); border-color: var(--accent); }
+    main { max-width: 1280px; margin: 0 auto; padding: 20px 16px 80px; }
+    section.hero-flow { border: 2px solid var(--accent); }
+    section.hero-flow .mermaid {
+      min-height: 420px;
+      background: #faf8f3;
+      border-radius: 8px;
+      padding: 12px;
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px 18px 10px;
+      margin-bottom: 18px;
+    }
+    section h2 { margin: 0 0 6px; font-size: 18px; color: var(--accent); }
+    section h3 { margin: 16px 0 8px; font-size: 15px; }
+    .note { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
+    .file {
+      display: inline-block;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 12px;
+      background: var(--code);
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-right: 4px;
+    }
+    .mermaid { display: flex; justify-content: center; overflow-x: auto; padding-bottom: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 8px 0 12px; }
+    th, td { border: 1px solid var(--line); padding: 7px 9px; text-align: left; vertical-align: top; }
+    th { background: var(--bg); }
+    ul.compact { margin: 6px 0 12px; padding-left: 18px; color: var(--muted); font-size: 13px; }
+    ul.compact li { margin: 3px 0; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>海贸工作台 · 详细流程图</h1>
+    <p>含启动、鉴权、对话助手调度、工具执行、文档识别、业务单据、知识问答、数据落盘 · 双击本 HTML 即可查看</p>
+  </header>
+  <nav>
+    <a href="#all">总览大图</a>
+    <a href="#agentspec">Agent参数</a>
+    <a href="#boot">0.启动</a>
+    <a href="#auth">1.鉴权</a>
+    <a href="#sys">2.系统分层</a>
+    <a href="#assistant">3.对话总控</a>
+    <a href="#skill">4.Skill匹配</a>
+    <a href="#agents">5.子Agent</a>
+    <a href="#tools">6.工具执行</a>
+    <a href="#doc">7.文档识别</a>
+    <a href="#crm">8.CRM写入</a>
+    <a href="#biz">9.业务主链</a>
+    <a href="#kb">10.知识问答</a>
+    <a href="#data">11.数据存储</a>
+    <a href="#map">12.对照表</a>
+  </nav>
+
+  <main>
+    <section id="all" class="hero-flow">
+      <h2>总览大图 · 全部流程串起来</h2>
+      <p class="note">
+        从登录进入系统后，业务员可走两条主线：
+        <b>对话助手（AI 调度，约 30 个工具）</b> 与 <b>业务单据页（人工 CRM）</b>；
+        两边都写入同一套 Store，并共用知识库 / LLM。下方分图是各支路放大。
+      </p>
+      <pre class="mermaid">
+flowchart TB
+  Start([业务员打开系统]) --> Login{已登录?}
+  Login -->|否| Auth["Login 发 Token"]
+  Auth --> Shell[App 壳：侧栏 + 各业务页]
+  Login -->|是| Shell
+
+  Shell --> Choice{选入口}
+
+  Choice -->|对话助手| Asst["Assistant 可上传附件"]
+  Choice -->|悬浮助手| Float["FloatingChat"]
+  Choice -->|业务页面| BizPages["Inbox 报价 订单 跟进"]
+
+  Asst --> ChatAPI["POST assistant chat"]
+  ChatAPI --> Sup[总控 supervisor_select]
+
+  Sup --> Br1{附件?}
+  Br1 -->|是| DocSkill["doc_parse 到 document_agent"]
+  Br1 -->|否| Br2{CRM或跳转词?}
+  Br2 -->|是| CrmSkill["crm_action 到 crm_agent"]
+  Br2 -->|否| Match["match_skill 约15个Skill"]
+
+  DocSkill --> Pick[domain_agent_select_tools]
+  CrmSkill --> Pick
+  Match --> Pick
+
+  Pick --> ToolRun["run_selected_tools handlers+extended"]
+
+  ToolRun --> Tools{7 类 Agent 工具箱}
+  Tools -->|寻源6| TSrc["parse search rank compare estimate risk"]
+  Tools -->|沟通6| TCom["draft polish followup todos factory search"]
+  Tools -->|样品5| TSam["list upsert overdue advance brief"]
+  Tools -->|合规4| TCmp["cert market claim shipping"]
+  Tools -->|文档3| TDoc["parse extract_quote doc_vs"]
+  Tools -->|CRM5| TCrm["crm search 360 overdue nav"]
+  Tools -->|知识2| TKb["faq_lookup + kb_search"]
+
+  TSrc --> Merge[汇总 answer<br/>+ actions/nav_links]
+  TCom --> Merge
+  TSam --> Merge
+  TCmp --> Merge
+  TDoc --> Merge
+  TCrm --> Merge
+  TKb --> Merge
+
+  Merge --> Audit[写审计 add_audit]
+  Merge --> Pipe{绑定询盘?}
+  Pipe -->|是| WritePipe[写回 inquiry.pipeline]
+  Pipe -->|否| UIShow[前端展示回复/跳转按钮]
+  WritePipe --> UIShow
+
+  Float --> ChatAsk[ChatAssistant.ask]
+  ChatAsk --> KBPath2[Redis → FAQ → Skill工具? → RAG]
+  KBPath2 --> UIShow
+
+  BizPages --> Inq[新建/打开询盘 Inbox]
+  Inq --> Proc{智能处理?}
+  Proc -->|是| OldAI[agents/run 或 process<br/>也可回写 pipeline]
+  Proc -->|否| Manual[人工编辑]
+  OldAI --> Draft[reply_draft / quote_draft...]
+  Manual --> Draft
+  Draft --> Appr[提交审批 Approvals]
+  Appr --> Boss{老板决定}
+  Boss -->|驳回| Draft
+  Boss -->|通过| Quote[正式报价 Quotations]
+  Quote --> Order[转订单 Orders]
+  Inq --> Follow[跟进 Followups]
+  Inq --> Sample[样品 Samples]
+  Sample -->|可转订| Order
+
+  UIShow -.->|跳转按钮| BizPages
+  TCrm -.->|直接写入| Store[(RuntimeStore<br/>storage/*.json)]
+  WritePipe --> Store
+  OldAI --> Store
+  Quote --> Store
+  Order --> Store
+  Follow --> Store
+  Sample --> Store
+  Audit --> Store
+
+  Store --> Dash[今日看板 Dashboard]
+  TKb --> Ext[(Redis / MySQL / Milvus / 千问)]
+  KBPath2 --> Ext
+  ToolRun --> Ext
+  TDoc --> Ext
+      </pre>
+      <ul class="compact">
+        <li><b>实线</b>：主调用顺序；虚线：跳转或旁路写入</li>
+        <li>工具实现：<code>handlers.py</code>（基础）+ <code>extended.py</code>（扩充），合计约 30 个</li>
+        <li>两边最终都汇入 <code>storage/*.json</code>，看板从 Store 聚合</li>
+      </ul>
+    </section>
+
+    <section id="boot">
+      <h2>0. 启动与请求入口</h2>
+      <p class="note">
+        <span class="file">run_api.py</span> → uvicorn 加载 <span class="file">backend.api.app:app</span>；
+        前端 <span class="file">frontend/npm run dev</span> → Vite :5173，请求经 <span class="file">api.js</span> 打到 :8000。
+      </p>
+      <pre class="mermaid">
+flowchart LR
+  Dev[开发者] --> BE[python run_api.py<br/>:8000]
+  Dev --> FE[npm run dev<br/>:5173]
+  User[业务员浏览器] --> FE
+  FE -->|Authorization Bearer token<br/>frontend/src/api.js| BE
+  BE --> App[backend/api/app.py<br/>路由分发]
+  App --> AuthMW[Depends current_user]
+  AuthMW --> Handlers[业务 Handler]
+      </pre>
+      <ul class="compact">
+        <li>健康检查：<code>GET /api/health</code>（可不登录）</li>
+        <li>登录：<code>POST /api/auth/login</code> → 返回 token</li>
+        <li>其余业务 API 几乎都要 token；前端路由 <code>router.beforeEach</code> 无 token 跳转 <code>/login</code></li>
+      </ul>
+    </section>
+
+    <section id="auth">
+      <h2>1. 登录鉴权（细）</h2>
+      <p class="note">
+        实现：<span class="file">frontend/src/views/Login.vue</span> +
+        <span class="file">backend/services/auth.py</span> +
+        <span class="file">storage/users.json</span> / sessions
+      </p>
+      <pre class="mermaid">
+flowchart TD
+  A[打开任意业务页] --> B{本地有 Token?}
+  B -->|否| C[跳转 /login?redirect=原路径]
+  B -->|是| D[带 Token 调 API]
+  C --> E[输入账号密码]
+  E --> F[POST /api/auth/login]
+  F --> G{账号 active?}
+  G -->|否| H[拒绝：已停用]
+  G -->|是| I{密码正确?}
+  I -->|否| J[401]
+  I -->|是| K[发 Token / 写 session]
+  K --> L[api.js 存 Token]
+  L --> M[redirect 回原页面]
+  D --> N{API current_user}
+  N -->|无效或过期| O[401 清会话回登录]
+  N -->|有效| P[继续业务并可写审计]
+      </pre>
+    </section>
+
+    <section id="sys">
+      <h2>2. 系统分层（谁调谁）</h2>
+      <pre class="mermaid">
+flowchart TB
+  subgraph FE["前端 Vue3"]
+    Pages["views/*.vue"]
+    Router["router.js"]
+    ApiJS["api.js"]
+    AssistUI["Assistant.vue"]
+    Float["FloatingChat.vue"]
+  end
+  subgraph API["FastAPI app.py"]
+    AuthAPI["API auth users"]
+    BizAPI["API inquiries quotes orders"]
+    AsstAPI["API assistant chat"]
+    ChatAPI["API chat ask"]
+    DocAPI["API documents upload parse"]
+    AgAPI["API agents run skills"]
+  end
+  subgraph Core["核心编排"]
+    Sup["supervisor.py"]
+    Dom["domain_agents.py"]
+    SkR["skills/router.py"]
+    Orch["orchestrator.py"]
+    ChatAsst["chat_assistant.py"]
+  end
+  subgraph Tools["工具层"]
+    Hand["tools/handlers.py"]
+    Ext["tools/extended.py"]
+    CRM["tools/crm_actions.py"]
+    DocP["services/doc_parser.py"]
+    Reg["tools/registry.py"]
+  end
+  subgraph Data["数据与外部"]
+    Store["services/store.py + storage json"]
+    Redis[("Redis")]
+    MySQL[("MySQL FAQ")]
+    Milvus[("Milvus + BGE-M3")]
+    LLM["千问 LLM / qwen-vl"]
+  end
+  Pages --> ApiJS
+  AssistUI --> ApiJS
+  Float --> ApiJS
+  ApiJS --> API
+  AsstAPI --> Sup
+  AgAPI --> Orch
+  ChatAPI --> ChatAsst
+  Sup --> Dom
+  Sup --> SkR
+  Sup --> Orch
+  Orch --> Reg
+  Reg --> Hand
+  Reg --> Ext
+  Hand --> CRM
+  Hand --> DocP
+  Hand --> Store
+  Ext --> Store
+  Ext --> LLM
+  Hand --> LLM
+  DocP --> LLM
+  ChatAsst --> Redis
+  ChatAsst --> MySQL
+  ChatAsst --> Milvus
+  ChatAsst --> LLM
+  ChatAsst --> SkR
+  BizAPI --> Store
+  AuthAPI --> Store
+      </pre>
+    </section>
+
+    <section id="assistant">
+      <h2>3. 对话助手总控（最细主链路）</h2>
+      <p class="note">
+        UI：<span class="file">Assistant.vue</span> →
+        <code>POST /api/assistant/chat</code> →
+        <span class="file">run_supervisor_desk()</span>
+      </p>
+      <pre class="mermaid">
+flowchart TD
+  U[用户输入 message] --> C0{有上传 file_path?}
+  C0 -->|是| Ctx1[context 带 pipeline.document<br/>prefer_doc 可能为 true]
+  C0 -->|否| Ctx2[普通 context]
+  Ctx1 --> RS[run_supervisor_desk]
+  Ctx2 --> RS
+  RS --> S1[supervisor_select 意图]
+
+  S1 --> P1{附件优先?}
+  P1 -->|有文件且非明确找厂等| DOC[强制 skill=doc_parse<br/>agent=document_agent]
+  P1 -->|否| P2{CRM/跳转关键词?}
+  P2 -->|添加厂商客户跟进/打开xx| CRM[强制 skill=crm_action<br/>agent=crm_agent]
+  P2 -->|否| MS[match_skill 规则/LLM]
+  MS --> LLM1{use_real_llm?}
+  LLM1 -->|是| SUP_LLM[总控 LLM 再确认<br/>skill+agent JSON]
+  LLM1 -->|否| MAP[SKILL_TO_AGENT 映射]
+  SUP_LLM --> AG
+  MAP --> AG
+  DOC --> AG[拿到 agent + default_tools]
+  CRM --> AG
+
+  AG --> DAS[domain_agent_select_tools]
+  DAS --> M2{mode == kb 或 tools 空?}
+  M2 -->|是| KB[_kb_only FAQ/RAG]
+  M2 -->|否| RUN[run_selected_tools 顺序执行]
+  RUN --> FMT[_format_answer 汇总]
+  KB --> FMT2[_format_answer + kb]
+  FMT --> ACT[_collect_actions<br/>actions / nav_links]
+  FMT2 --> RET[返回前端]
+  ACT --> RET
+  RET --> AUD[add_audit 总控对话]
+  RET --> PIPE{绑定 inquiry_id?}
+  PIPE -->|是| W[写回 inquiry.pipeline]
+  PIPE -->|否| END[结束]
+  W --> END
+      </pre>
+      <ul class="compact">
+        <li>返回字段重点：<code>answer</code>、<code>supervisor</code>、<code>agent_plan</code>、<code>invoked_tools</code>、<code>pipeline</code>、<code>actions</code></li>
+        <li>前端用 <code>actions</code> / <code>nav_links</code> 渲染可点击跳转按钮</li>
+      </ul>
+    </section>
+
+    <section id="skill">
+      <h2>4. Skill 匹配细节</h2>
+      <p class="note">
+        <span class="file">skills/*.yaml</span> 由 <span class="file">loader.py</span> 加载；
+        <span class="file">router.py</span> 规则优先顺序如下（越前越先命中）。
+      </p>
+      <pre class="mermaid">
+flowchart TD
+  G[user_goal 文本] --> R[按 _RULE_ORDER 扫 triggers]
+  R --> Hit{命中某个 Skill?}
+  Hit -->|是| Spec[特殊处理]
+  Spec --> FV{是 find_vendor?}
+  FV -->|且无产品线索| Pre[前置加上 parse_requirement]
+  FV -->|只要/仅/只找| Only[仅 search_vendors]
+  FV -->|否| Norm[用 YAML 默认 tools]
+  Pre --> Out
+  Only --> Out
+  Norm --> Out
+  Hit -->|否| Def[默认 kb_qa]
+  Def --> Out[返回 skill_id + tools + reason]
+  Out --> Opt{配置了真实 LLM?}
+  Opt -->|是| L[LLM 再判一次 Skill]
+  Opt -->|否| Done[结束]
+  L --> Done
+      </pre>
+      <table>
+        <tr><th>优先级</th><th>Skill id</th><th>典型触发</th><th>默认工具</th></tr>
+        <tr><td>1</td><td>crm_action</td><td>添加厂商/客户、360、逾期跟进</td><td>crm_action / search_crm / customer_360 / overdue / nav</td></tr>
+        <tr><td>2</td><td>doc_parse</td><td>识别/PDF/OCR/表格</td><td>parse_document → extract_quote_fields → doc_vs_requirement</td></tr>
+        <tr><td>3</td><td>full_rfq</td><td>全套/完整方案</td><td>parse→search→rank→compare→estimate→draft_client</td></tr>
+        <tr><td>4</td><td>followup_mail</td><td>跟催/催确认</td><td>draft_followup_mail</td></tr>
+        <tr><td>5</td><td>email_todos</td><td>待办/要点/风险点</td><td>extract_email_todos</td></tr>
+        <tr><td>6</td><td>sample_track</td><td>样品/打样/逾期</td><td>list / overdue / upsert / advance / brief</td></tr>
+        <tr><td>7</td><td>cert_check</td><td>认证/单证/宣传</td><td>cert / market / claim / shipping</td></tr>
+        <tr><td>8</td><td>vendor_risk</td><td>风险/短名单/排序</td><td>vendor_risk_check, rank_vendors</td></tr>
+        <tr><td>9</td><td>cost_estimate</td><td>成本/粗算/大概多少钱</td><td>estimate_cost</td></tr>
+        <tr><td>10</td><td>ask_factory</td><td>询厂</td><td>draft_factory_brief (±search)</td></tr>
+        <tr><td>11</td><td>reply_overseas</td><td>回海外/润色</td><td>draft_client_reply, polish_reply</td></tr>
+        <tr><td>12</td><td>compare_quotes</td><td>比价</td><td>compare_quotes, estimate_cost</td></tr>
+        <tr><td>13</td><td>parse_requirement</td><td>解析需求</td><td>parse_requirement</td></tr>
+        <tr><td>14</td><td>find_vendor</td><td>找厂</td><td>search_vendors, rank_vendors</td></tr>
+        <tr><td>15</td><td>kb_qa</td><td>MOQ/口径/资料</td><td>faq_lookup, kb_search</td></tr>
+      </table>
+    </section>
+
+    <section id="agents">
+      <h2>5. 子 Agent 分工（扩充后）</h2>
+      <p class="note"><span class="file">domain_agents.py</span>：每个 Agent 工具箱约 4～6 个（知识 2 个）。实现见 <span class="file">handlers.py</span> + <span class="file">extended.py</span>。</p>
+      <pre class="mermaid">
+flowchart TB
+  SUP[总控选定 Skill] --> MAP{SKILL_TO_AGENT}
+  MAP -->|find parse compare full cost risk| SA[sourcing_agent 6]
+  MAP -->|reply ask todos followup| CA[communication_agent 6]
+  MAP -->|sample_track| SMA[sample_agent 5]
+  MAP -->|cert_check| CMA[compliance_agent 4]
+  MAP -->|doc_parse| DA[document_agent 3]
+  MAP -->|crm_action| CRMA[crm_agent 5]
+  MAP -->|kb_qa| KA[knowledge_agent 2]
+
+  SA --> T1["parse search rank compare estimate risk"]
+  CA --> T2["draft polish followup todos factory search"]
+  SMA --> T3["list upsert overdue advance brief"]
+  CMA --> T4["cert market claim shipping"]
+  DA --> T5["parse_document extract_quote doc_vs"]
+  CRMA --> T6["crm search 360 overdue nav"]
+  KA --> T7["faq_lookup kb_search"]
+      </pre>
+    </section>
+
+    <section id="tools">
+      <h2>6. 工具执行与询盘详情旁路</h2>
+      <div class="grid2">
+        <div>
+          <h3>6.1 对话里执行</h3>
+          <pre class="mermaid">
+flowchart TD
+  Tools[tools 列表有序] --> Loop[逐个 call_tool]
+  Loop --> H[handlers 或 extended]
+  H --> Pipe[merge 进 pipeline]
+  Pipe --> Trace[agent_trace 记录]
+  Trace --> Next{还有下一个?}
+  Next -->|是| Loop
+  Next -->|否| Out[outputs + pipeline]
+          </pre>
+        </div>
+        <div>
+          <h3>6.2 询盘详情旧入口</h3>
+          <pre class="mermaid">
+flowchart TD
+  Page[InquiryDetail.vue] --> R1[POST /api/agents/run]
+  Page --> R2[POST /api/inquiries/id/process]
+  R1 --> Orch[orchestrate / run_selected_tools]
+  R2 --> Graph[trade/graph<br/>run_inquiry_pipeline]
+  Orch --> Store1[写回 inquiry.pipeline]
+  Graph --> Store1
+          </pre>
+        </div>
+      </div>
+      <table>
+        <tr><th>工具名</th><th>模块</th><th>写入 pipeline</th><th>作用</th></tr>
+        <tr><td>parse_requirement</td><td>handlers</td><td>requirement</td><td>拆需求字段</td></tr>
+        <tr><td>search_vendors</td><td>handlers</td><td>vendor_match</td><td>匹配厂商</td></tr>
+        <tr><td>rank_vendors</td><td>extended</td><td>vendor_ranking / shortlist</td><td>打分排序短名单</td></tr>
+        <tr><td>compare_quotes</td><td>handlers</td><td>compare / quote_draft</td><td>比价</td></tr>
+        <tr><td>estimate_cost</td><td>extended</td><td>cost_estimate</td><td>成本粗算</td></tr>
+        <tr><td>vendor_risk_check</td><td>extended</td><td>risk_report</td><td>厂商风险</td></tr>
+        <tr><td>draft_client_reply / polish_reply / draft_followup_mail</td><td>handlers+ext</td><td>reply_draft 等</td><td>回海外/润色/跟催</td></tr>
+        <tr><td>extract_email_todos</td><td>extended</td><td>email_todos</td><td>邮件待办</td></tr>
+        <tr><td>draft_factory_brief</td><td>handlers</td><td>factory_brief</td><td>询厂话术</td></tr>
+        <tr><td>list/upsert/overdue/advance/brief samples</td><td>handlers+ext</td><td>samples / overdue...</td><td>样品全流程</td></tr>
+        <tr><td>cert / market / claim / shipping</td><td>handlers+ext</td><td>checklist 等</td><td>合规四件套</td></tr>
+        <tr><td>parse_document / extract_quote / doc_vs</td><td>handlers+ext</td><td>document / quote_fields / gaps</td><td>文档识别与对比</td></tr>
+        <tr><td>crm_action / search_crm / customer_360 / overdue / nav</td><td>crm+ext</td><td>crm / 360...</td><td>CRM 写入与查询</td></tr>
+        <tr><td>faq_lookup / kb_search</td><td>extended</td><td>faq_hit / kb_answer</td><td>知识问答</td></tr>
+      </table>
+    </section>
+
+    <section id="doc">
+      <h2>7. 文档识别支路</h2>
+      <p class="note">
+        上传 <code>POST /api/documents/upload</code> → 得到 <code>file_path</code> → 对话带上附件；
+        解析核心 <span class="file">services/doc_parser.py</span>
+      </p>
+      <pre class="mermaid">
+flowchart TD
+  Up[用户选 PDF/图片] --> API[POST /documents/upload]
+  API --> Save[落盘 uploads]
+  Save --> Chat[assistant/chat 带 file_path]
+  Chat --> DA[document_agent]
+  DA --> PD[parse_document]
+  PD --> Type{文件类型}
+  Type -->|PDF| PP[pdfplumber]
+  Type -->|图片| VL[qwen-vl-plus]
+  PP --> Thin{文本过少?}
+  Thin -->|是| VL
+  Thin -->|否| EQ[extract_quote_fields]
+  VL --> EQ
+  EQ --> GAP[doc_vs_requirement<br/>对比需求缺口]
+  GAP --> UI[助手展示结果]
+      </pre>
+    </section>
+
+    <section id="crm">
+      <h2>8. CRM 写入 / 跳转支路</h2>
+      <p class="note"><span class="file">tools/crm_actions.py</span></p>
+      <pre class="mermaid">
+flowchart TD
+  Msg[用户: 添加厂商 XX...] --> Det[_detect_intent]
+  Det --> I{意图}
+  I -->|upsert_vendor| Ext1[LLM/规则抽字段]
+  I -->|upsert_customer| Ext2[抽客户字段]
+  I -->|upsert_followup| Ext3[抽跟进字段]
+  I -->|suggest_nav| Nav[生成 router-link]
+  Ext1 --> W1[store.upsert_vendor]
+  Ext2 --> W2[store.upsert_customer]
+  Ext3 --> W3[store.upsert_followup]
+  W1 --> Act[返回 actions: 打开厂商页]
+  W2 --> Act
+  W3 --> Act
+  Nav --> Act
+  Act --> FE[Assistant.vue 渲染按钮]
+  FE --> Jump[router-link 跳转业务页]
+      </pre>
+    </section>
+
+    <section id="biz">
+      <h2>9. 业务主链（单据状态）</h2>
+      <p class="note">人工页面操作为主；Agent 产出草稿，外发需审批闸门。</p>
+      <pre class="mermaid">
+flowchart TD
+  New[POST /inquiries 新建询盘<br/>status=new] --> List[Inbox 列表]
+  List --> Det[InquiryDetail]
+  Det --> AI{点智能处理?}
+  AI -->|是| Proc[process 或 agents/run<br/>写 pipeline 草稿]
+  AI -->|否| Manual[人工编辑]
+  Proc --> Draft[reply_draft / quote_draft 等]
+  Manual --> Draft
+  Draft --> Sub[POST submit-approval]
+  Sub --> Appr[approvals 待审]
+  Appr --> Boss{老板 decide}
+  Boss -->|驳回| Back[改草稿再提交]
+  Boss -->|通过| Send[可外发口径]
+  Draft --> Q[POST quotations<br/>或 from-inquiry]
+  Q --> QS{报价状态}
+  QS --> Ord[POST orders<br/>或 from-quotation]
+  Det --> Samp[样品 Samples]
+  Samp --> Ord2[from-sample 转订单]
+  List --> FU[Followups 跟进]
+  FU --> Done[标记 done / 逾期标红]
+  Ord --> Close[订单推进]
+  Ord2 --> Close
+      </pre>
+      <ul class="compact">
+        <li>看板 <code>GET /api/dashboard</code>：汇总询盘/逾期跟进/样品/报价/订单待办</li>
+        <li>客户/厂商 360：<code>/customers/:id/related</code>、<code>/vendors/:id/related</code></li>
+      </ul>
+    </section>
+
+    <section id="kb">
+      <h2>10. 知识问答（悬浮助手 + knowledge_agent）</h2>
+      <p class="note">
+        对话里 knowledge_agent 现走工具：<code>faq_lookup</code> → <code>kb_search</code>。
+        悬浮聊仍可用 <code>POST /api/chat/ask</code> → <span class="file">chat_assistant.py</span>。
+      </p>
+      <pre class="mermaid">
+flowchart TD
+  Q[question] --> FAQ[faq_lookup<br/>MySQL FAQ/BM25]
+  FAQ --> Hit{FAQ 够?}
+  Hit -->|展示命中| Ans[kb_answer / faq_hit]
+  Hit -->|继续| RAG[kb_search<br/>Milvus hybrid + LLM]
+  RAG --> Ans
+  Float[悬浮 chat ask] --> R1{Redis?}
+  R1 -->|是| Ans2[直接返回]
+  R1 -->|否| FAQ2[FAQ 再 Skill 再 RAG]
+  FAQ2 --> Ans2
+      </pre>
+      <ul class="compact">
+        <li>建库脚本：<code>scripts/init_milvus.py</code>、<code>scripts/build_knowledge_base.py</code></li>
+        <li>语料：<code>data/knowledge/**</code>；失败时可 BM25 兜底</li>
+        <li>知识页：<code>POST /api/knowledge/search</code>、<code>/rebuild</code></li>
+      </ul>
+    </section>
+
+    <section id="data">
+      <h2>11. 数据落盘与配置</h2>
+      <pre class="mermaid">
+flowchart LR
+  API[FastAPI Handlers] --> Store[RuntimeStore]
+  Store --> RJ[storage/runtime.json<br/>询盘/审批/样品/跟进/报价/订单...]
+  Store --> UJ[storage/users.json]
+  Store --> SJ[storage/sessions.json]
+  Store --> AJ[审计写入 runtime]
+  Seed[data/seed/*.json] -.->|首次/种子| Store
+  KBSrc[data/knowledge/*.md] --> Build[build_knowledge_base]
+  Build --> Mil[(Milvus gift_knowledge)]
+  Build --> Idx[storage/kb_index.json 兜底]
+  Env[.env / Apikey] --> LLM[llm_factory]
+  Env --> EmbPath[本地 BGE-M3 路径]
+      </pre>
+      <table>
+        <tr><th>配置项（概念）</th><th>作用</th></tr>
+        <tr><td>Apikey / API_KEY</td><td>千问文本 + 视觉</td></tr>
+        <tr><td>use_real_llm</td><td>关则更多规则兜底 / mock</td></tr>
+        <tr><td>Milvus 127.0.0.1:19530</td><td>向量检索</td></tr>
+        <tr><td>Redis</td><td>对话缓存</td></tr>
+        <tr><td>MySQL FAQ</td><td>高频问答</td></tr>
+      </table>
+    </section>
+
+    <section id="agentspec" class="hero-flow">
+      <h2>Agent / 工具 / 参数手册（详细 · 已扩充）</h2>
+      <p class="note">
+        文字版：<span class="file">Agent与工具参数手册.md</span>。
+        约 <b>30</b> 个工具 = <code>handlers.py</code> + <code>extended.py</code>；
+        <code>call_tool(name, **context)</code>，context = 请求字段 + 累积 pipeline。
+      </p>
+
+      <h3>调用栈</h3>
+      <pre class="mermaid">
+flowchart LR
+  HTTP[AssistantChatBody] --> Desk[run_supervisor_desk]
+  Desk --> Sel[supervisor_select]
+  Sel --> Pick[domain_agent_select_tools]
+  Pick --> Run[run_selected_tools]
+  Run --> Call[registry.call_tool]
+  Call --> Fn["handlers extended crm_actions"]
+  Fn --> Pipe[merge_pipeline]
+  Pipe --> Run
+      </pre>
+
+      <h3>七个领域 Agent（工具箱）</h3>
+      <table>
+        <tr><th>Agent</th><th>数</th><th>干什么</th><th>Skills</th><th>工具方法</th></tr>
+        <tr>
+          <td><b>sourcing_agent</b></td><td>6</td>
+          <td>解析/找厂/排序/比价/成本/风险</td>
+          <td>find_vendor, parse_requirement, compare_quotes, full_rfq, cost_estimate, vendor_risk</td>
+          <td>parse_requirement, search_vendors, rank_vendors, compare_quotes, estimate_cost, vendor_risk_check</td>
+        </tr>
+        <tr>
+          <td><b>communication_agent</b></td><td>6</td>
+          <td>回海外/润色/跟催/待办/询厂</td>
+          <td>reply_overseas, ask_factory, email_todos, followup_mail</td>
+          <td>draft_client_reply, polish_reply, draft_followup_mail, extract_email_todos, draft_factory_brief, search_vendors</td>
+        </tr>
+        <tr>
+          <td><b>sample_agent</b></td><td>5</td>
+          <td>登记/列表/逾期/推进/打样简报</td>
+          <td>sample_track</td>
+          <td>list_samples, upsert_sample, sample_overdue, advance_sample_status, sample_brief</td>
+        </tr>
+        <tr>
+          <td><b>compliance_agent</b></td><td>4</td>
+          <td>品类认证/市场包/宣传风险/出货单证</td>
+          <td>cert_check</td>
+          <td>cert_checklist, market_cert_pack, claim_risk_check, shipping_doc_checklist</td>
+        </tr>
+        <tr>
+          <td><b>document_agent</b></td><td>3</td>
+          <td>OCR + 抽报价字段 + 需求对比</td>
+          <td>doc_parse</td>
+          <td>parse_document, extract_quote_fields, doc_vs_requirement</td>
+        </tr>
+        <tr>
+          <td><b>crm_agent</b></td><td>5</td>
+          <td>建档/搜索/360/逾期跟进/跳转</td>
+          <td>crm_action</td>
+          <td>crm_action, suggest_nav, search_crm, customer_360, list_overdue_followups</td>
+        </tr>
+        <tr>
+          <td><b>knowledge_agent</b></td><td>2</td>
+          <td>FAQ + RAG（不再空壳）</td>
+          <td>kb_qa</td>
+          <td>faq_lookup, kb_search</td>
+        </tr>
+      </table>
+
+      <h3>新增工具：方法 · 参数 · 产出</h3>
+      <table>
+        <tr><th>工具</th><th>Python</th><th>关键入参</th><th>产出</th><th>依赖</th></tr>
+        <tr><td>rank_vendors</td><td>extended.tool_rank_vendors</td><td>vendor_match 或 query</td><td>vendor_ranking, shortlist</td><td>有 search 更好</td></tr>
+        <tr><td>estimate_cost</td><td>tool_estimate_cost</td><td>compare 或 requirement</td><td>cost_estimate</td><td>有比价更准</td></tr>
+        <tr><td>vendor_risk_check</td><td>tool_vendor_risk_check</td><td>vendor_match / V-xxx</td><td>risk_report</td><td>有候选厂</td></tr>
+        <tr><td>polish_reply</td><td>tool_polish_reply</td><td><b>已有 reply_draft</b></td><td>reply_draft</td><td>先 draft_client_reply</td></tr>
+        <tr><td>extract_email_todos</td><td>tool_extract_email_todos</td><td>subject+body</td><td>email_todos</td><td>无</td></tr>
+        <tr><td>draft_followup_mail</td><td>tool_draft_followup_mail</td><td>客户/需求上下文</td><td>followup_mail_draft</td><td>无</td></tr>
+        <tr><td>sample_overdue</td><td>tool_sample_overdue</td><td>—</td><td>samples_overdue</td><td>无</td></tr>
+        <tr><td>advance_sample_status</td><td>tool_advance_sample_status</td><td>sample_id?, status?</td><td>sample_status_change</td><td>有样品记录</td></tr>
+        <tr><td>sample_brief</td><td>tool_sample_brief</td><td>requirement/样品字段</td><td>sample_brief</td><td>无</td></tr>
+        <tr><td>market_cert_pack</td><td>tool_market_cert_pack</td><td>country</td><td>market_cert_pack</td><td>无</td></tr>
+        <tr><td>claim_risk_check</td><td>tool_claim_risk_check</td><td>文案文本</td><td>claim_risks</td><td>无</td></tr>
+        <tr><td>shipping_doc_checklist</td><td>tool_shipping_doc_checklist</td><td>country?</td><td>shipping_docs</td><td>无</td></tr>
+        <tr><td>extract_quote_fields</td><td>tool_extract_quote_fields</td><td>document / file_path</td><td>quote_fields</td><td>先识别文档</td></tr>
+        <tr><td>doc_vs_requirement</td><td>tool_doc_vs_requirement</td><td>document_text + requirement</td><td>gaps</td><td>先 parse</td></tr>
+        <tr><td>search_crm</td><td>tool_search_crm</td><td>query</td><td>crm_customers/vendors</td><td>无</td></tr>
+        <tr><td>customer_360</td><td>tool_customer_360</td><td>customer_name/id</td><td>customer_360</td><td>无</td></tr>
+        <tr><td>list_overdue_followups</td><td>tool_list_overdue_followups</td><td>—</td><td>overdue_followups</td><td>无</td></tr>
+        <tr><td>faq_lookup / kb_search</td><td>extended</td><td>query</td><td>faq_hit / kb_answer</td><td>无</td></tr>
+      </table>
+      <p class="note">基础工具（parse_requirement / search_vendors / compare_quotes / draft_* / list_samples / upsert_sample / cert_checklist / parse_document / crm_action / suggest_nav）参数见手册原文或源码。</p>
+
+      <h3>工具依赖关系图（扩充后）</h3>
+      <pre class="mermaid">
+flowchart TD
+  PR[parse_requirement] --> SV[search_vendors]
+  SV --> RK[rank_vendors]
+  SV --> CQ[compare_quotes]
+  RK --> CQ
+  CQ --> EST[estimate_cost]
+  SV --> RISK[vendor_risk_check]
+  CQ --> CR[draft_client_reply]
+  CR --> POL[polish_reply]
+  SV --> FB[draft_factory_brief]
+  UP[upload] --> PD[parse_document]
+  PD --> EQ[extract_quote_fields]
+  PD --> GAP[doc_vs_requirement]
+  PR --> GAP
+  Q[question] --> FAQ[faq_lookup]
+  FAQ --> KBS[kb_search]
+  TXT[自然语言] --> CRM[crm_action]
+  TXT --> SCR[search_crm]
+  TXT --> C360[customer_360]
+  SAM[样品] --> SO[sample_overdue]
+  SAM --> ADV[advance_sample_status]
+  CAT[品类或国家] --> CERT["cert market claim shipping"]
+      </pre>
+
+      <h3>HTTP 入口参数（对话）</h3>
+      <table>
+        <tr><th>接口</th><th>Body 模型</th><th>字段</th></tr>
+        <tr>
+          <td>POST /api/assistant/chat</td>
+          <td>AssistantChatBody</td>
+          <td>message*；inquiry_id；subject；body；customer_name；country；file_path；force_vision</td>
+        </tr>
+        <tr>
+          <td>POST /api/agents/run</td>
+          <td>AgentRunBody</td>
+          <td>user_goal；tools[]?；inquiry_id；query；询盘字段；requirement/vendor_match/compare/pipeline 可透传</td>
+        </tr>
+        <tr>
+          <td>POST /api/agents/{tool_name}</td>
+          <td>同 AgentRunBody 上下文</td>
+          <td>直接单工具；下游可带中间结果</td>
+        </tr>
+        <tr>
+          <td>POST /api/documents/upload</td>
+          <td>multipart file</td>
+          <td>返回 file_path 给聊天用</td>
+        </tr>
+        <tr>
+          <td>POST /api/chat/ask</td>
+          <td>ChatAskBody</td>
+          <td>question*；可选询盘上下文（悬浮助手）</td>
+        </tr>
+      </table>
+
+      <h3>CRM 写入字段</h3>
+      <table>
+        <tr><th>意图</th><th>必填</th><th>可选</th><th>Store 方法</th></tr>
+        <tr><td>add_vendor</td><td>name</td><td>region, contact, categories, strengths</td><td>upsert_vendor</td></tr>
+        <tr><td>add_customer</td><td>name</td><td>country, contact, email</td><td>upsert_customer</td></tr>
+        <tr><td>add_followup</td><td>customer_name 或 reason</td><td>due 等</td><td>upsert_followup</td></tr>
+        <tr><td>goto_*</td><td>无</td><td>—</td><td>不写库，只返回 link</td></tr>
+      </table>
+    </section>
+
+    <section id="map">
+      <h2>12. 页面 / 文件对照（读代码用地图）</h2>
+      <h3>前端路由</h3>
+      <table>
+        <tr><th>路由</th><th>视图</th><th>关键动作</th></tr>
+        <tr><td>/assistant</td><td>Assistant.vue</td><td>总控对话、上传、跳转按钮</td></tr>
+        <tr><td>/inbox, /inbox/:id</td><td>Inbox / InquiryDetail</td><td>询盘 CRUD、智能处理、提审批</td></tr>
+        <tr><td>/approvals</td><td>Approvals.vue</td><td>通过/驳回</td></tr>
+        <tr><td>/quotations /orders /samples /followups</td><td>对应 views</td><td>单据 CRUD、互转</td></tr>
+        <tr><td>/customers /vendors</td><td>Customers / Products</td><td>档案 + related</td></tr>
+        <tr><td>/knowledge</td><td>Knowledge.vue</td><td>检索/重建</td></tr>
+        <tr><td>/agents</td><td>Agents.vue</td><td>Skill/工具目录展示</td></tr>
+        <tr><td>/users /audit</td><td>Users / Audit</td><td>账号停用、审计</td></tr>
+      </table>
+      <h3>建议阅读顺序（更细）</h3>
+      <ol style="color:var(--muted);font-size:13px">
+        <li><span class="file">run_api.py</span> → <span class="file">backend/config.py</span> → <span class="file">backend/api/app.py</span>（先搜 <code>@app.post</code>）</li>
+        <li><span class="file">frontend/src/router.js</span> → <span class="file">api.js</span> → <span class="file">App.vue</span> → <span class="file">Assistant.vue</span></li>
+        <li><span class="file">agents/supervisor.py</span>（<code>run_supervisor_desk</code>）→ <span class="file">domain_agents.py</span> → <span class="file">skills/router.py</span></li>
+        <li><span class="file">orchestrator.py</span> → <span class="file">tools/handlers.py</span> → <span class="file">crm_actions.py</span> → <span class="file">doc_parser.py</span></li>
+        <li><span class="file">services/store.py</span> → <span class="file">storage/</span> 实际 JSON</li>
+        <li><span class="file">core/chat_assistant.py</span> → <span class="file">knowledge_base.py</span> → <span class="file">docs/对话助手-Redis-MySQL-RAG.md</span></li>
+      </ol>
+    </section>
+  </main>
+</body>
+</html>
