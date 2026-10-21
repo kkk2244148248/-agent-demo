@@ -43,5 +43,9 @@ dist-ssr/
 .DS_Store
 Thumbs.db
 
+# ---------- 本地仓库备份（重写历史前的快照，绝不入库） ----------
+.git-backup-*/
+*.bundle
+
 # ---------- 归档目录中的探索期截图 ----------
 docs/archive/**/_shots/
